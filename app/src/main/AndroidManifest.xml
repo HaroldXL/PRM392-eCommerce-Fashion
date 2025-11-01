@@ -45,6 +45,7 @@
             android:name=".HomeActivity"
             android:exported="false"
             android:screenOrientation="portrait"
+            android:launchMode="singleTask"
             android:theme="@style/Theme.PRM392_FinalProject" />
         
         <!-- Profile Activity -->
@@ -52,7 +53,23 @@
             android:name=".ProfileActivity"
             android:exported="false"
             android:screenOrientation="portrait"
+            android:launchMode="singleTask"
+            android:theme="@style/Theme.PRM392_FinalProject" />
+        
+        <!-- Product Detail Activity -->
+        <activity
+            android:name=".ProductDetailActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
             android:parentActivityName=".HomeActivity"
+            android:theme="@style/Theme.PRM392_FinalProject" />
+        
+        <!-- Category Products Activity -->
+        <activity
+            android:name=".CategoryProductsActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".MainActivity"
             android:theme="@style/Theme.PRM392_FinalProject" />
             
     </application>

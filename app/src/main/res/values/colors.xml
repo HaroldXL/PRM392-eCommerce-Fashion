@@ -5,6 +5,7 @@
     
     <!-- Primary Colors - Clean White Theme -->
     <color name="primary">#3B82F6</color>
+    <color name="colorPrimary">#3B82F6</color>
     <color name="primary_dark">#2563EB</color>
     <color name="primary_light">#60A5FA</color>
     
@@ -14,7 +15,7 @@
     
     <!-- Background Colors -->
     <color name="background">#FFFFFF</color>
-    <color name="background_light">#F7F8FA</color>
+    <color name="background_light">#F7FAFD</color>
     <color name="input_background">#F5F5F7</color>
     
     <!-- Text Colors -->
