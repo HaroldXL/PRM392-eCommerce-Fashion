@@ -1,0 +1,59 @@
+<resources>
+    <string name="app_name">BigSize Fashion</string>
+    
+    <!-- Login Screen -->
+    <string name="login_title">Welcome Back!</string>
+    <string name="login_subtitle">Sign in to continue shopping</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="no_account">Don\'t have an account?</string>
+    <string name="sign_up">Sign Up</string>
+    
+    <!-- Register Screen -->
+    <string name="register_title">Create Account</string>
+    <string name="register_subtitle">Join us for exclusive fashion</string>
+    <string name="full_name">Full Name</string>
+    <string name="phone">Phone Number</string>
+    <string name="address">Address</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="register">Register</string>
+    <string name="already_have_account">Already have an account?</string>
+    <string name="sign_in">Sign In</string>
+    
+    <!-- Validation Messages -->
+    <string name="error_email_empty">Email is required</string>
+    <string name="error_email_invalid">Please enter a valid email</string>
+    <string name="error_password_empty">Password is required</string>
+    <string name="error_password_short">Password must be at least 6 characters</string>
+    <string name="error_password_mismatch">Passwords do not match</string>
+    <string name="error_full_name_empty">Full name is required</string>
+    <string name="error_phone_empty">Phone number is required</string>
+    <string name="error_phone_invalid">Please enter a valid phone number</string>
+    <string name="error_address_empty">Address is required</string>
+    
+    <!-- Messages -->
+    <string name="login_success">Login successful!</string>
+    <string name="login_failed">Login failed. Please try again.</string>
+    <string name="register_success">Registration successful!</string>
+    <string name="register_failed">Registration failed. Please try again.</string>
+    <string name="network_error">Network error. Please check your connection.</string>
+    <string name="loading">Please wait...</string>
+    
+    <!-- Home Screen -->
+    <string name="home">Home</string>
+    <string name="categories">Categories</string>
+    <string name="products">Featured Products</string>
+    <string name="view_all">View All</string>
+    <string name="search_hint">Search products...</string>
+    <string name="product_image">Product image</string>
+    <string name="category_image">Category image</string>
+    <string name="logout">Logout</string>
+    <string name="profile">Profile</string>
+    
+    <!-- Profile Screen -->
+    <string name="my_profile">My Profile</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="save">Save</string>
+</resources>
