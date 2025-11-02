@@ -71,6 +71,15 @@
             android:screenOrientation="portrait"
             android:parentActivityName=".MainActivity"
             android:theme="@style/Theme.PRM392_FinalProject" />
+        
+        <!-- Search Activity -->
+        <activity
+            android:name=".SearchActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".MainActivity"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/Theme.PRM392_FinalProject" />
             
     </application>
 

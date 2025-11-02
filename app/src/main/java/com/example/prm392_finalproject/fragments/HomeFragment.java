@@ -21,6 +21,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.prm392_finalproject.CategoryProductsActivity;
 import com.example.prm392_finalproject.ProductDetailActivity;
+import com.example.prm392_finalproject.SearchActivity;
 import com.example.prm392_finalproject.R;
 import com.example.prm392_finalproject.adapters.BannerAdapter;
 import com.example.prm392_finalproject.adapters.CategoryAdapter;
@@ -113,8 +114,10 @@ public class HomeFragment extends Fragment {
 
                 // Set up button listeners
                 if (btnSearch != null) {
-                    btnSearch.setOnClickListener(
-                            v -> Toast.makeText(requireContext(), "Search clicked", Toast.LENGTH_SHORT).show());
+                    btnSearch.setOnClickListener(v -> {
+                        Intent intent = new Intent(requireContext(), SearchActivity.class);
+                        startActivity(intent);
+                    });
                 }
 
                 if (btnNotification != null) {

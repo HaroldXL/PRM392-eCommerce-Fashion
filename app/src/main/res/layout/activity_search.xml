@@ -18,35 +18,21 @@
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@android:color/transparent"
-            app:navigationIcon="@drawable/ic_back"
-            app:title="Category Products"
-            app:titleTextColor="#1A1A1A"
-            app:titleCentered="false" />
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <!-- Main Content -->
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-        <LinearLayout
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:background="@android:color/transparent"
+            android:paddingTop="8dp"
+            android:paddingBottom="12dp"
+            app:navigationIcon="@drawable/ic_back">
 
             <!-- Search Input -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
+                android:layout_marginEnd="16dp"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="0dp"
                 app:strokeWidth="0dp"
-                app:cardBackgroundColor="#FFFFFF">
+                app:cardBackgroundColor="#F5F5F5">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -64,16 +50,16 @@
                         android:contentDescription="Search icon" />
 
                     <EditText
-                        android:id="@+id/etSearchCategory"
+                        android:id="@+id/etSearch"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:layout_marginStart="12dp"
                         android:background="@android:color/transparent"
-                        android:hint="Search in this category..."
+                        android:hint="Search products..."
                         android:textColor="#1A1A1A"
                         android:textColorHint="#999999"
-                        android:textSize="15sp"
+                        android:textSize="16sp"
                         android:imeOptions="actionSearch"
                         android:inputType="text"
                         android:maxLines="1" />
@@ -82,13 +68,29 @@
 
             </com.google.android.material.card.MaterialCardView>
 
+        </com.google.android.material.appbar.MaterialToolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- Main Content -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
             <!-- Products RecyclerView -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerViewProducts"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="8dp"
-                android:clipToPadding="false" />
+                android:clipToPadding="false"
+                android:visibility="gone" />
 
             <!-- Empty State -->
             <TextView
@@ -97,10 +99,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="100dp"
                 android:gravity="center"
-                android:text="No products found"
+                android:text="Enter a search term"
                 android:textColor="#999999"
-                android:textSize="16sp"
-                android:visibility="gone" />
+                android:textSize="16sp" />
 
         </LinearLayout>
 

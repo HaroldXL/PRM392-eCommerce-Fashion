@@ -30,7 +30,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class CategoryProductsActivity extends AppCompatActivity {
+public class SearchActivity extends AppCompatActivity {
 
     private EditText etSearch;
     private RecyclerView recyclerView;
@@ -40,29 +40,23 @@ public class CategoryProductsActivity extends AppCompatActivity {
     private TextView tvEmpty;
     private Toolbar toolbar;
 
-    private int categoryId;
-    private String categoryName;
     private Timer searchTimer;
-    private static final long SEARCH_DELAY = 500;
+    private static final long SEARCH_DELAY = 500; // milliseconds
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_category_products);
-
-        // Get category info from intent
-        categoryId = getIntent().getIntExtra("category_id", 0);
-        categoryName = getIntent().getStringExtra("category_name");
+        setContentView(R.layout.activity_search);
 
         initViews();
         setupToolbar();
         setupRecyclerView();
-        loadProducts();
+        setupSearchListener();
     }
 
     private void initViews() {
         toolbar = findViewById(R.id.toolbar);
-        etSearch = findViewById(R.id.etSearchCategory);
+        etSearch = findViewById(R.id.etSearch);
         recyclerView = findViewById(R.id.recyclerViewProducts);
         progressBar = findViewById(R.id.progressBar);
         tvEmpty = findViewById(R.id.tvEmpty);
@@ -72,7 +66,7 @@ public class CategoryProductsActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle(categoryName != null ? categoryName : "Products");
+            getSupportActionBar().setTitle("");
         }
         toolbar.setNavigationOnClickListener(v -> finish());
     }
@@ -88,12 +82,10 @@ public class CategoryProductsActivity extends AppCompatActivity {
 
         // Set click listener for product items
         productAdapter.setOnItemClickListener(product -> {
-            Intent intent = new Intent(CategoryProductsActivity.this, ProductDetailActivity.class);
+            Intent intent = new Intent(SearchActivity.this, ProductDetailActivity.class);
             intent.putExtra("product_id", product.getId());
             startActivity(intent);
         });
-
-        setupSearchListener();
     }
 
     private void setupSearchListener() {
@@ -104,6 +96,7 @@ public class CategoryProductsActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Cancel previous search timer
                 if (searchTimer != null) {
                     searchTimer.cancel();
                 }
@@ -113,27 +106,35 @@ public class CategoryProductsActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
                 String query = s.toString().trim();
 
+                // Start new search timer with delay
                 searchTimer = new Timer();
                 searchTimer.schedule(new TimerTask() {
                     @Override
                     public void run() {
-                        runOnUiThread(() -> loadProducts(query));
+                        runOnUiThread(() -> {
+                            if (query.isEmpty()) {
+                                showEmptyState("Enter a search term");
+                                productAdapter.setProducts(new ArrayList<>());
+                            } else {
+                                searchProducts(query);
+                            }
+                        });
                     }
                 }, SEARCH_DELAY);
             }
         });
+
+        // Auto focus on search field
+        etSearch.requestFocus();
     }
 
-    private void loadProducts() {
-        loadProducts(null);
-    }
-
-    private void loadProducts(String searchQuery) {
+    private void searchProducts(String query) {
         progressBar.setVisibility(View.VISIBLE);
         tvEmpty.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.GONE);
 
         ApiService apiService = RetrofitClient.createService(ApiService.class);
-        Call<ProductResponse> call = apiService.getProducts(1, 100, searchQuery, categoryId);
+        Call<ProductResponse> call = apiService.getProducts(1, 100, query, null);
 
         call.enqueue(new Callback<ProductResponse>() {
             @Override
@@ -149,27 +150,28 @@ public class CategoryProductsActivity extends AppCompatActivity {
                         tvEmpty.setVisibility(View.GONE);
                         recyclerView.setVisibility(View.VISIBLE);
                     } else {
-                        showEmptyState();
+                        showEmptyState("No products found for \"" + query + "\"");
                     }
                 } else {
-                    Toast.makeText(CategoryProductsActivity.this,
-                            "Failed to load products", Toast.LENGTH_SHORT).show();
-                    showEmptyState();
+                    Toast.makeText(SearchActivity.this,
+                            "Failed to search products", Toast.LENGTH_SHORT).show();
+                    showEmptyState("Search failed");
                 }
             }
 
             @Override
             public void onFailure(Call<ProductResponse> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
-                Toast.makeText(CategoryProductsActivity.this,
+                Toast.makeText(SearchActivity.this,
                         "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                showEmptyState();
+                showEmptyState("Connection error");
             }
         });
     }
 
-    private void showEmptyState() {
+    private void showEmptyState(String message) {
         recyclerView.setVisibility(View.GONE);
+        tvEmpty.setText(message);
         tvEmpty.setVisibility(View.VISIBLE);
     }
 

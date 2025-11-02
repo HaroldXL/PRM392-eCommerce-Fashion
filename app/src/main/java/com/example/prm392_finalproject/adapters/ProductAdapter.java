@@ -39,6 +39,11 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         this.listener = listener;
     }
 
+    // Alias method for compatibility
+    public void setOnItemClickListener(OnProductClickListener listener) {
+        this.listener = listener;
+    }
+
     public void setProducts(List<Product> products) {
         this.productList = products;
         notifyDataSetChanged();
