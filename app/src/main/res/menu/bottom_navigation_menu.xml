@@ -11,9 +11,9 @@
         android:title="My Order" />
 
     <item
-        android:id="@+id/nav_favorite"
-        android:icon="@drawable/ic_favorite"
-        android:title="Favorite" />
+        android:id="@+id/nav_cart"
+        android:icon="@drawable/ic_cart"
+        android:title="Cart" />
 
     <item
         android:id="@+id/nav_profile"

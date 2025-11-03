@@ -80,6 +80,42 @@
             android:parentActivityName=".MainActivity"
             android:windowSoftInputMode="adjustResize"
             android:theme="@style/Theme.PRM392_FinalProject" />
+        
+        <!-- Forgot Password Activity -->
+        <activity
+            android:name=".activities.ForgotPasswordActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".LoginActivity"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/Theme.PRM392_FinalProject" />
+        
+        <!-- Verify OTP Activity -->
+        <activity
+            android:name=".activities.VerifyOtpActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".activities.ForgotPasswordActivity"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/Theme.PRM392_FinalProject" />
+        
+        <!-- Reset Password Activity -->
+        <activity
+            android:name=".activities.ResetPasswordActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".activities.VerifyOtpActivity"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/Theme.PRM392_FinalProject" />
+        
+        <!-- Order Activity -->
+        <activity
+            android:name=".OrderActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".MainActivity"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/Theme.PRM392_FinalProject" />
             
     </application>
 

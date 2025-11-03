@@ -14,10 +14,12 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 
 import com.bumptech.glide.Glide;
+import com.example.prm392_finalproject.models.CartItem;
 import com.example.prm392_finalproject.models.ProductDetail;
 import com.example.prm392_finalproject.models.ProductVariant;
 import com.example.prm392_finalproject.network.ApiService;
 import com.example.prm392_finalproject.network.RetrofitClient;
+import com.example.prm392_finalproject.utils.CartManager;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
@@ -50,6 +52,7 @@ public class ProductDetailActivity extends AppCompatActivity {
     private ProgressBar progressBar;
 
     private ApiService apiService;
+    private CartManager cartManager;
     private ProductDetail productDetail;
     private String selectedSize;
     private String selectedColor;
@@ -63,6 +66,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         setupToolbar();
 
         apiService = RetrofitClient.createService(ApiService.class);
+        cartManager = new CartManager(this);
 
         int productId = getIntent().getIntExtra(EXTRA_PRODUCT_ID, -1);
         if (productId != -1) {
@@ -271,12 +275,21 @@ public class ProductDetailActivity extends AppCompatActivity {
         // Find the selected variant
         for (ProductVariant variant : productDetail.getProductVariants()) {
             if (variant.getSize().equals(selectedSize) && variant.getColor().equals(selectedColor)) {
-                // TODO: Implement add to cart functionality
+                // Create cart item
+                CartItem cartItem = new CartItem(
+                        productDetail.getId(),
+                        productDetail.getName() + " (" + selectedSize + ", " + selectedColor + ")",
+                        productDetail.getImageUrl(),
+                        productDetail.getPrice(),
+                        1 // Default quantity
+                );
+
+                // Add to cart
+                cartManager.addToCart(cartItem);
+
                 Toast.makeText(this,
-                        "Added to cart: " + productDetail.getName() +
-                                " - Size: " + selectedSize +
-                                " - Color: " + selectedColor,
-                        Toast.LENGTH_LONG).show();
+                        "Added to cart successfully!",
+                        Toast.LENGTH_SHORT).show();
                 return;
             }
         }

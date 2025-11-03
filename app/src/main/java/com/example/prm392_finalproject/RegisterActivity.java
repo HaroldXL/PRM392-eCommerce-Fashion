@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.prm392_finalproject.models.AuthResponse;
 import com.example.prm392_finalproject.models.RegisterRequest;
+import com.example.prm392_finalproject.models.User;
 import com.example.prm392_finalproject.network.ApiService;
 import com.example.prm392_finalproject.network.RetrofitClient;
 import com.example.prm392_finalproject.utils.SessionManager;
@@ -103,17 +104,12 @@ public class RegisterActivity extends AppCompatActivity {
                     AuthResponse authResponse = response.body();
 
                     if (authResponse.isSuccess()) {
-                        // Show success message
-                        Toast.makeText(RegisterActivity.this,
-                                getString(R.string.register_success),
-                                Toast.LENGTH_SHORT).show();
-
                         // Optionally auto-login after registration
                         String token = authResponse.getToken() != null ? authResponse.getToken() : "";
                         sessionManager.createLoginSession(token, email, fullName);
 
-                        // Navigate to main activity
-                        navigateToMain();
+                        // Fetch user profile to get user ID
+                        fetchUserProfile(token);
                     } else {
                         Toast.makeText(RegisterActivity.this,
                                 getString(R.string.register_failed),
@@ -236,5 +232,42 @@ public class RegisterActivity extends AppCompatActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
+    }
+
+    private void fetchUserProfile(String token) {
+        Call<User> call = apiService.getUserProfile("Bearer " + token);
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    User user = response.body();
+                    // Save user ID to session
+                    sessionManager.saveUserId(user.getId());
+
+                    // Show success message
+                    Toast.makeText(RegisterActivity.this,
+                            getString(R.string.register_success),
+                            Toast.LENGTH_SHORT).show();
+
+                    // Navigate to main activity
+                    navigateToMain();
+                } else {
+                    // Even if profile fetch fails, we can still proceed
+                    Toast.makeText(RegisterActivity.this,
+                            getString(R.string.register_success),
+                            Toast.LENGTH_SHORT).show();
+                    navigateToMain();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                // Even if profile fetch fails, we can still proceed
+                Toast.makeText(RegisterActivity.this,
+                        getString(R.string.register_success),
+                        Toast.LENGTH_SHORT).show();
+                navigateToMain();
+            }
+        });
     }
 }

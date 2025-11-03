@@ -20,6 +20,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.prm392_finalproject.fragments.CartFragment;
 import com.example.prm392_finalproject.fragments.HomeFragment;
 import com.example.prm392_finalproject.fragments.ProfileFragment;
 import com.google.android.material.appbar.MaterialToolbar;
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private FragmentManager fragmentManager;
 
     private HomeFragment homeFragment;
+    private CartFragment cartFragment;
     private ProfileFragment profileFragment;
 
     @Override
@@ -57,7 +59,8 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigation = findViewById(R.id.bottomNavigation);
         fragmentManager = getSupportFragmentManager();
 
-        // Add bottom padding to fragment container to prevent bottom nav from covering content
+        // Add bottom padding to fragment container to prevent bottom nav from covering
+        // content
         FrameLayout fragmentContainer = findViewById(R.id.fragmentContainer);
         fragmentContainer.post(() -> {
             int bottomNavHeight = bottomNavigation.getHeight();
@@ -103,8 +106,12 @@ public class MainActivity extends AppCompatActivity {
             } else if (itemId == R.id.nav_orders) {
                 updateToolbarForOrders();
                 return true;
-            } else if (itemId == R.id.nav_favorite) {
-                updateToolbarForFavorites();
+            } else if (itemId == R.id.nav_cart) {
+                if (cartFragment == null) {
+                    cartFragment = new CartFragment();
+                }
+                loadFragment(cartFragment);
+                updateToolbarForCart();
                 return true;
             } else if (itemId == R.id.nav_profile) {
                 if (profileFragment == null) {
@@ -128,10 +135,10 @@ public class MainActivity extends AppCompatActivity {
         toolbar.setTitle("");
         toolbarContentContainer.setVisibility(View.VISIBLE);
         toolbarContentContainer.removeAllViews();
-        
+
         View homeToolbar = LayoutInflater.from(this).inflate(R.layout.toolbar_home, toolbarContentContainer, false);
         toolbarContentContainer.addView(homeToolbar);
-        
+
         TabLayout tabLayout = homeToolbar.findViewById(R.id.tabLayout);
         if (tabLayout != null && homeFragment != null) {
             homeFragment.setTabLayout(tabLayout);
@@ -154,10 +161,10 @@ public class MainActivity extends AppCompatActivity {
         setToolbarTitleBoldCentered();
     }
 
-    private void updateToolbarForFavorites() {
+    private void updateToolbarForCart() {
         toolbarContentContainer.setVisibility(View.GONE);
         toolbarContentContainer.removeAllViews();
-        toolbar.setTitle("Favorites");
+        toolbar.setTitle("Shopping Cart");
         toolbar.setTitleTextColor(Color.parseColor("#3B82F6"));
         setToolbarTitleBoldCentered();
     }

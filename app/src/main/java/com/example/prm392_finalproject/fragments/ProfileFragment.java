@@ -19,10 +19,12 @@ import androidx.fragment.app.Fragment;
 
 import com.example.prm392_finalproject.LoginActivity;
 import com.example.prm392_finalproject.R;
+import com.example.prm392_finalproject.models.UpdateProfileRequest;
 import com.example.prm392_finalproject.models.User;
 import com.example.prm392_finalproject.network.ApiService;
 import com.example.prm392_finalproject.network.RetrofitClient;
 import com.example.prm392_finalproject.utils.SessionManager;
+import com.google.android.material.button.MaterialButton;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -34,7 +36,8 @@ public class ProfileFragment extends Fragment {
     private TextView tvUserName, tvUserEmail;
     private EditText etFullName, etPhone, etAddress;
     private ProgressBar progressBar;
-    private LinearLayout btnEditProfile, btnLogout;
+    private MaterialButton btnEditProfile;
+    private LinearLayout btnLogout;
 
     private ApiService apiService;
     private SessionManager sessionManager;
@@ -73,7 +76,7 @@ public class ProfileFragment extends Fragment {
 
     private void setupListeners() {
         btnEditProfile.setOnClickListener(v -> {
-            Toast.makeText(requireContext(), "Edit profile coming soon", Toast.LENGTH_SHORT).show();
+            updateProfile();
         });
 
         btnLogout.setOnClickListener(v -> {
@@ -134,5 +137,56 @@ public class ProfileFragment extends Fragment {
         etFullName.setText(user.getFullName());
         etPhone.setText(user.getPhone());
         etAddress.setText(user.getAddress());
+    }
+
+    private void updateProfile() {
+        // Get input values
+        String fullName = etFullName.getText().toString().trim();
+        String phone = etPhone.getText().toString().trim();
+        String address = etAddress.getText().toString().trim();
+
+        // Validate inputs
+        if (fullName.isEmpty()) {
+            etFullName.setError("Full name is required");
+            etFullName.requestFocus();
+            return;
+        }
+
+        progressBar.setVisibility(View.VISIBLE);
+        btnEditProfile.setEnabled(false);
+
+        String token = sessionManager.getToken();
+        String authHeader = "Bearer " + token;
+
+        UpdateProfileRequest request = new UpdateProfileRequest(fullName, phone, address);
+
+        apiService.updateUserProfile(authHeader, request).enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                progressBar.setVisibility(View.GONE);
+                btnEditProfile.setEnabled(true);
+
+                if (response.isSuccessful() && response.body() != null) {
+                    User updatedUser = response.body();
+                    displayUserInfo(updatedUser);
+                    Toast.makeText(requireContext(),
+                            "Profile updated successfully",
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(requireContext(),
+                            "Failed to update profile",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                progressBar.setVisibility(View.GONE);
+                btnEditProfile.setEnabled(true);
+                Toast.makeText(requireContext(),
+                        "Error: " + t.getMessage(),
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

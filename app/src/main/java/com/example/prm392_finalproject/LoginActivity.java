@@ -13,8 +13,10 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.prm392_finalproject.activities.ForgotPasswordActivity;
 import com.example.prm392_finalproject.models.AuthResponse;
 import com.example.prm392_finalproject.models.LoginRequest;
+import com.example.prm392_finalproject.models.User;
 import com.example.prm392_finalproject.network.ApiService;
 import com.example.prm392_finalproject.network.RetrofitClient;
 import com.example.prm392_finalproject.utils.SessionManager;
@@ -73,7 +75,8 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         tvForgotPassword.setOnClickListener(v -> {
-            Toast.makeText(this, "Forgot Password functionality coming soon!", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
+            startActivity(intent);
         });
     }
 
@@ -114,13 +117,8 @@ public class LoginActivity extends AppCompatActivity {
 
                         sessionManager.createLoginSession(token, email, userName);
 
-                        // Show success message
-                        Toast.makeText(LoginActivity.this,
-                                getString(R.string.login_success),
-                                Toast.LENGTH_SHORT).show();
-
-                        // Navigate to main activity
-                        navigateToMain();
+                        // Fetch user profile to get user ID
+                        fetchUserProfile(token);
                     } else {
                         Toast.makeText(LoginActivity.this,
                                 getString(R.string.login_failed),
@@ -190,5 +188,42 @@ public class LoginActivity extends AppCompatActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
+    }
+
+    private void fetchUserProfile(String token) {
+        Call<User> call = apiService.getUserProfile("Bearer " + token);
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    User user = response.body();
+                    // Save user ID to session
+                    sessionManager.saveUserId(user.getId());
+
+                    // Show success message
+                    Toast.makeText(LoginActivity.this,
+                            getString(R.string.login_success),
+                            Toast.LENGTH_SHORT).show();
+
+                    // Navigate to main activity
+                    navigateToMain();
+                } else {
+                    // Even if profile fetch fails, we can still proceed
+                    Toast.makeText(LoginActivity.this,
+                            getString(R.string.login_success),
+                            Toast.LENGTH_SHORT).show();
+                    navigateToMain();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                // Even if profile fetch fails, we can still proceed
+                Toast.makeText(LoginActivity.this,
+                        getString(R.string.login_success),
+                        Toast.LENGTH_SHORT).show();
+                navigateToMain();
+            }
+        });
     }
 }

@@ -111,7 +111,6 @@
                     android:paddingEnd="16dp"
                     android:importantForAutofill="no"
                     android:inputType="textPersonName"
-                    android:enabled="false"
                     android:layout_marginBottom="16dp" />
 
                 <!-- Phone -->
@@ -136,7 +135,6 @@
                     android:paddingEnd="16dp"
                     android:importantForAutofill="no"
                     android:inputType="phone"
-                    android:enabled="false"
                     android:layout_marginBottom="16dp" />
 
                 <!-- Address -->
@@ -160,14 +158,26 @@
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
                     android:importantForAutofill="no"
-                    android:inputType="textPostalAddress"
-                    android:enabled="false" />
+                    android:inputType="textPostalAddress" />
+
+                <!-- Edit Profile Button -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnEditProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:text="Save Changes"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:backgroundTint="#3B82F6"
+                    app:cornerRadius="12dp"
+                    android:layout_marginTop="24dp" />
 
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Menu Options Card -->
+        <!-- Logout Card -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -180,92 +190,41 @@
             app:cardBackgroundColor="#FFFFFF">
 
             <LinearLayout
+                android:id="@+id/btnLogout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_height="56dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true">
 
-                <!-- Edit Profile -->
-                <LinearLayout
-                    android:id="@+id/btnEditProfile"
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:paddingStart="20dp"
-                    android:paddingEnd="20dp"
-                    android:background="?attr/selectableItemBackground"
-                    android:clickable="true"
-                    android:focusable="true">
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_back"
+                    android:rotation="180"
+                    app:tint="#FF3B30"
+                    android:contentDescription="Logout" />
 
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_user_avatar"
-                        app:tint="#666666"
-                        android:contentDescription="Edit Profile" />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textStyle="bold"
+                    android:layout_marginStart="16dp"
+                    android:text="Logout"
+                    android:textSize="15sp"
+                    android:textColor="#FF3B30" />
 
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginStart="16dp"
-                        android:text="Edit Profile"
-                        android:textSize="15sp"
-                        android:textColor="#1A1A1A" />
-
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@drawable/ic_arrow_forward"
-                        app:tint="#CCCCCC"
-                        android:contentDescription="Arrow" />
-
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#F0F0F0"
-                    android:layout_marginStart="60dp" />
-
-                <!-- Logout -->
-                <LinearLayout
-                    android:id="@+id/btnLogout"
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:paddingStart="20dp"
-                    android:paddingEnd="20dp"
-                    android:background="?attr/selectableItemBackground"
-                    android:clickable="true"
-                    android:focusable="true">
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_back"
-                        android:rotation="180"
-                        app:tint="#FF3B30"
-                        android:contentDescription="Logout" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginStart="16dp"
-                        android:text="Logout"
-                        android:textSize="15sp"
-                        android:textColor="#FF3B30" />
-
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@drawable/ic_arrow_forward"
-                        app:tint="#CCCCCC"
-                        android:contentDescription="Arrow" />
-
-                </LinearLayout>
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_arrow_forward"
+                    app:tint="#CCCCCC"
+                    android:contentDescription="Arrow" />
 
             </LinearLayout>
 
