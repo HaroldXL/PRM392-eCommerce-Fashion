@@ -1,27 +1,18 @@
 package com.example.prm392_finalproject.models;
 
-import com.google.gson.annotations.SerializedName;
-
-public class User {
-    private int id;
+public class UpdateUserRequest {
     private String email;
-
-    @SerializedName("fullName")
     private String fullName;
-
     private String phone;
     private String address;
     private int role;
 
-    @SerializedName("roleName")
-    private String roleName;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+    public UpdateUserRequest(String email, String fullName, String phone, String address, int role) {
+        this.email = email;
+        this.fullName = fullName;
+        this.phone = phone;
+        this.address = address;
+        this.role = role;
     }
 
     public String getEmail() {
@@ -62,13 +53,5 @@ public class User {
 
     public void setRole(int role) {
         this.role = role;
-    }
-
-    public String getRoleName() {
-        return roleName;
-    }
-
-    public void setRoleName(String roleName) {
-        this.roleName = roleName;
     }
 }

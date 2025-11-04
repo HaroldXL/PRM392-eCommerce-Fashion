@@ -20,10 +20,11 @@ public class BannerAdapter extends RecyclerView.Adapter<BannerAdapter.BannerView
 
     public BannerAdapter() {
         this.bannerItems = new ArrayList<>();
-        // Add default banners
-        bannerItems.add(new BannerItem("24% off shipping today\non bag purchases", "By Kukuku Store"));
-        bannerItems.add(new BannerItem("New Arrivals\nSpring Collection", "Fashion Store"));
-        bannerItems.add(new BannerItem("Special Discount\nUp to 50% OFF", "BigSize Fashion"));
+        // Add banners with images
+        bannerItems.add(
+                new BannerItem("24% off shipping today\non bag purchases", "By Kukuku Store", R.drawable.banner_1));
+        bannerItems.add(new BannerItem("New Arrivals\nSpring Collection", "Fashion Store", R.drawable.banner_2));
+        bannerItems.add(new BannerItem("Special Discount\nUp to 50% OFF", "BigSize Fashion", R.drawable.banner_3));
     }
 
     @NonNull
@@ -39,6 +40,7 @@ public class BannerAdapter extends RecyclerView.Adapter<BannerAdapter.BannerView
         BannerItem item = bannerItems.get(position);
         holder.tvBannerTitle.setText(item.getTitle());
         holder.tvBannerSubtitle.setText(item.getSubtitle());
+        holder.ivBannerImage.setImageResource(item.getImageResId());
     }
 
     @Override
@@ -62,10 +64,12 @@ public class BannerAdapter extends RecyclerView.Adapter<BannerAdapter.BannerView
     public static class BannerItem {
         private String title;
         private String subtitle;
+        private int imageResId;
 
-        public BannerItem(String title, String subtitle) {
+        public BannerItem(String title, String subtitle, int imageResId) {
             this.title = title;
             this.subtitle = subtitle;
+            this.imageResId = imageResId;
         }
 
         public String getTitle() {
@@ -74,6 +78,10 @@ public class BannerAdapter extends RecyclerView.Adapter<BannerAdapter.BannerView
 
         public String getSubtitle() {
             return subtitle;
+        }
+
+        public int getImageResId() {
+            return imageResId;
         }
     }
 }

@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.prm392_finalproject.activities.AdminDashboardActivity;
 import com.example.prm392_finalproject.activities.ForgotPasswordActivity;
 import com.example.prm392_finalproject.models.AuthResponse;
 import com.example.prm392_finalproject.models.LoginRequest;
@@ -114,11 +115,12 @@ public class LoginActivity extends AppCompatActivity {
                         // Save session
                         String token = authResponse.getToken() != null ? authResponse.getToken() : "";
                         String userName = authResponse.getEmail() != null ? authResponse.getEmail() : email;
+                        int role = authResponse.getRole();
 
                         sessionManager.createLoginSession(token, email, userName);
 
-                        // Fetch user profile to get user ID
-                        fetchUserProfile(token);
+                        // Fetch user profile to get user ID and then navigate based on role
+                        fetchUserProfile(token, role);
                     } else {
                         Toast.makeText(LoginActivity.this,
                                 getString(R.string.login_failed),
@@ -190,7 +192,14 @@ public class LoginActivity extends AppCompatActivity {
         finish();
     }
 
-    private void fetchUserProfile(String token) {
+    private void navigateToAdminDashboard() {
+        Intent intent = new Intent(LoginActivity.this, AdminDashboardActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
+    }
+
+    private void fetchUserProfile(String token, int role) {
         Call<User> call = apiService.getUserProfile("Bearer " + token);
         call.enqueue(new Callback<User>() {
             @Override
@@ -205,14 +214,14 @@ public class LoginActivity extends AppCompatActivity {
                             getString(R.string.login_success),
                             Toast.LENGTH_SHORT).show();
 
-                    // Navigate to main activity
-                    navigateToMain();
+                    // Navigate based on role
+                    navigateBasedOnRole(role);
                 } else {
                     // Even if profile fetch fails, we can still proceed
                     Toast.makeText(LoginActivity.this,
                             getString(R.string.login_success),
                             Toast.LENGTH_SHORT).show();
-                    navigateToMain();
+                    navigateBasedOnRole(role);
                 }
             }
 
@@ -222,8 +231,18 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(LoginActivity.this,
                         getString(R.string.login_success),
                         Toast.LENGTH_SHORT).show();
-                navigateToMain();
+                navigateBasedOnRole(role);
             }
         });
+    }
+
+    private void navigateBasedOnRole(int role) {
+        // Role 2 = Customer -> Main shopping activity
+        // Role 1 = Admin, Role 3 = Manager -> Admin dashboard
+        if (role == 2) {
+            navigateToMain();
+        } else {
+            navigateToAdminDashboard();
+        }
     }
 }

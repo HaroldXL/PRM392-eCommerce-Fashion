@@ -4,8 +4,11 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
 
     <application
+        android:name=".MyApplication"
         android:usesCleartextTraffic="true"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -115,6 +118,37 @@
             android:screenOrientation="portrait"
             android:parentActivityName=".MainActivity"
             android:windowSoftInputMode="adjustResize"
+            android:theme="@style/Theme.PRM392_FinalProject" />
+        
+        <!-- About Us Activity -->
+        <activity
+            android:name=".AboutUsActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/Theme.PRM392_FinalProject" />
+        
+        <!-- Admin Dashboard Activity -->
+        <activity
+            android:name=".activities.AdminDashboardActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.PRM392_FinalProject" />
+        
+        <!-- Manage Users Activity -->
+        <activity
+            android:name=".activities.ManageUsersActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".activities.AdminDashboardActivity"
+            android:theme="@style/Theme.PRM392_FinalProject" />
+        
+        <!-- Manage Categories Activity -->
+        <activity
+            android:name=".activities.ManageCategoriesActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".activities.AdminDashboardActivity"
             android:theme="@style/Theme.PRM392_FinalProject" />
             
     </application>

@@ -11,6 +11,8 @@ public class AuthResponse {
     @SerializedName("expiresIn")
     private int expiresIn;
 
+    private int role;
+
     public String getEmail() {
         return email;
     }
@@ -35,6 +37,14 @@ public class AuthResponse {
         this.expiresIn = expiresIn;
     }
 
+    public int getRole() {
+        return role;
+    }
+
+    public void setRole(int role) {
+        this.role = role;
+    }
+
     // Helper methods for backward compatibility
     public boolean isSuccess() {
         return accessToken != null && !accessToken.isEmpty();
@@ -42,5 +52,17 @@ public class AuthResponse {
 
     public String getToken() {
         return accessToken;
+    }
+
+    public boolean isCustomer() {
+        return role == 2;
+    }
+
+    public boolean isAdmin() {
+        return role == 1;
+    }
+
+    public boolean isManager() {
+        return role == 3;
     }
 }

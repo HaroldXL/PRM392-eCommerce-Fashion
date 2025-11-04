@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="horizontal"
     android:padding="16dp"
+    android:background="@drawable/bg_banner_gradient"
     android:gravity="center_vertical">
 
     <!-- Text Content -->
@@ -31,25 +32,23 @@
             android:layout_marginTop="4dp"
             android:text="By Kukuku Store"
             android:textSize="12sp"
-            android:textColor="#999999" />
+            android:textColor="#666666" />
     </LinearLayout>
 
-    <!-- Banner Image -->
-    <ImageView
-        android:id="@+id/ivBannerImage"
+    <!-- Banner Image with corner radius -->
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/ic_launcher_background"
-        android:contentDescription="Banner Image" />
-
-    <!-- Decorative Shape (Optional) -->
-    <View
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_marginStart="-120dp"
-        android:layout_marginBottom="40dp"
-        android:background="@drawable/bg_banner_shape"
-        android:alpha="0.3" />
+        app:cardCornerRadius="12dp"
+        app:cardElevation="0dp"
+        app:strokeWidth="0dp">
+        
+        <ImageView
+            android:id="@+id/ivBannerImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:contentDescription="Banner Image" />
+    </com.google.android.material.card.MaterialCardView>
 
 </LinearLayout>

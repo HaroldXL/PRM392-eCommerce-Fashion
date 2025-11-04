@@ -32,8 +32,7 @@ import retrofit2.Response;
 
 public class ProfileFragment extends Fragment {
 
-    private ImageView imgAvatar;
-    private TextView tvUserName, tvUserEmail;
+    private TextView tvUserName, tvUserEmail, tvAvatarLetter;
     private EditText etFullName, etPhone, etAddress;
     private ProgressBar progressBar;
     private MaterialButton btnEditProfile;
@@ -63,7 +62,7 @@ public class ProfileFragment extends Fragment {
     }
 
     private void initViews(View view) {
-        imgAvatar = view.findViewById(R.id.imgAvatar);
+        tvAvatarLetter = view.findViewById(R.id.tvAvatarLetter);
         tvUserName = view.findViewById(R.id.tvUserName);
         tvUserEmail = view.findViewById(R.id.tvUserEmail);
         etFullName = view.findViewById(R.id.etFullName);
@@ -133,6 +132,14 @@ public class ProfileFragment extends Fragment {
     private void displayUserInfo(User user) {
         tvUserName.setText(user.getFullName() != null ? user.getFullName() : "User");
         tvUserEmail.setText(user.getEmail() != null ? user.getEmail() : "");
+
+        // Set avatar with first letter
+        if (tvAvatarLetter != null && user.getFullName() != null && !user.getFullName().isEmpty()) {
+            String firstLetter = user.getFullName().substring(0, 1).toUpperCase();
+            tvAvatarLetter.setText(firstLetter);
+        } else if (tvAvatarLetter != null) {
+            tvAvatarLetter.setText("U");
+        }
 
         etFullName.setText(user.getFullName());
         etPhone.setText(user.getPhone());

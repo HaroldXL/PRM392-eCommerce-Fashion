@@ -46,39 +46,23 @@
             android:visibility="visible">
 
             <!-- New Arrivals Section -->
-            <LinearLayout
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
+                android:text="Featured Products 🔥"
+                android:textSize="18sp"
+                android:textColor="#1A1A1A"
+                android:textStyle="bold"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
-                android:layout_marginBottom="12dp">
+                android:layout_marginBottom="12dp" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="New Arrivals 🔥"
-                    android:textSize="18sp"
-                    android:textColor="#1A1A1A"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tvSeeAll"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="See All"
-                    android:textSize="14sp"
-                    android:textColor="@color/primary"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <!-- Products RecyclerView (Horizontal) -->
+            <!-- Products RecyclerView (Grid) -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvProducts"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
                 android:clipToPadding="false"
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp" />

@@ -15,10 +15,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.prm392_finalproject.AboutUsActivity;
 import com.example.prm392_finalproject.CategoryProductsActivity;
 import com.example.prm392_finalproject.ProductDetailActivity;
 import com.example.prm392_finalproject.SearchActivity;
@@ -48,9 +50,10 @@ public class HomeFragment extends Fragment {
     private ProductAdapter productAdapter;
     private CategoryAdapter categoryAdapter;
     private ProgressBar progressBar;
-    private ImageView btnSearch, btnNotification, ivUserAvatar;
-    private TextView tvGreeting, tvSeeAll;
+    private ImageView btnSearch;
+    private TextView tvGreeting, tvUserAvatar;
     private TabLayout tabLayout;
+    private com.google.android.material.button.MaterialButton btnAboutUs;
 
     private ApiService apiService;
     private SessionManager sessionManager;
@@ -93,7 +96,6 @@ public class HomeFragment extends Fragment {
         rvProducts = view.findViewById(R.id.rvProducts);
         rvCategories = view.findViewById(R.id.rvCategories);
         progressBar = view.findViewById(R.id.progressBar);
-        tvSeeAll = view.findViewById(R.id.tvSeeAll);
 
         // TabLayout, UserHeader buttons will be set from MainActivity toolbar
     }
@@ -108,8 +110,8 @@ public class HomeFragment extends Fragment {
             View toolbarParent = (View) tabLayout.getParent();
             if (toolbarParent != null) {
                 btnSearch = toolbarParent.findViewById(R.id.btnSearch);
-                btnNotification = toolbarParent.findViewById(R.id.btnNotification);
-                ivUserAvatar = toolbarParent.findViewById(R.id.ivUserAvatar);
+                btnAboutUs = toolbarParent.findViewById(R.id.btnAboutUs);
+                tvUserAvatar = toolbarParent.findViewById(R.id.tvUserAvatar);
                 tvGreeting = toolbarParent.findViewById(R.id.tvGreeting);
 
                 // Set up button listeners
@@ -120,9 +122,11 @@ public class HomeFragment extends Fragment {
                     });
                 }
 
-                if (btnNotification != null) {
-                    btnNotification.setOnClickListener(
-                            v -> Toast.makeText(requireContext(), "Notifications clicked", Toast.LENGTH_SHORT).show());
+                if (btnAboutUs != null) {
+                    btnAboutUs.setOnClickListener(v -> {
+                        Intent intent = new Intent(requireContext(), AboutUsActivity.class);
+                        startActivity(intent);
+                    });
                 }
             }
         }
@@ -191,10 +195,9 @@ public class HomeFragment extends Fragment {
     }
 
     private void setupRecyclerViews() {
-        // Products RecyclerView (Horizontal)
+        // Products RecyclerView (Grid - 2 columns)
         productAdapter = new ProductAdapter(requireContext());
-        LinearLayoutManager productLayoutManager = new LinearLayoutManager(requireContext(),
-                LinearLayoutManager.HORIZONTAL, false);
+        GridLayoutManager productLayoutManager = new GridLayoutManager(requireContext(), 2);
         rvProducts.setLayoutManager(productLayoutManager);
         rvProducts.setAdapter(productAdapter);
 
@@ -219,9 +222,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void setupListeners() {
-        tvSeeAll.setOnClickListener(v -> {
-            Toast.makeText(requireContext(), "View all products", Toast.LENGTH_SHORT).show();
-        });
+        // Removed See All button listener
     }
 
     private void setupTabLayout() {
@@ -297,6 +298,11 @@ public class HomeFragment extends Fragment {
                         if (tvGreeting != null) {
                             tvGreeting.setText("Hi, " + user.getFullName());
                         }
+                        // Set avatar with first letter
+                        if (tvUserAvatar != null && user.getFullName() != null && !user.getFullName().isEmpty()) {
+                            String firstLetter = user.getFullName().substring(0, 1).toUpperCase();
+                            tvUserAvatar.setText(firstLetter);
+                        }
                     }
                 }
 
@@ -304,6 +310,9 @@ public class HomeFragment extends Fragment {
                 public void onFailure(Call<User> call, Throwable t) {
                     if (tvGreeting != null) {
                         tvGreeting.setText("Hi, User");
+                    }
+                    if (tvUserAvatar != null) {
+                        tvUserAvatar.setText("U");
                     }
                 }
             });

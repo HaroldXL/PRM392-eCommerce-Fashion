@@ -2,6 +2,23 @@ plugins {
     alias(libs.plugins.android.application)
 }
 
+// Load .env file
+val envFile = project.rootProject.file(".env")
+if (envFile.exists()) {
+    envFile.forEachLine { line ->
+        if (!line.startsWith("#") && line.contains("=")) {
+            val parts = line.split("=", limit = 2)
+            if (parts.size == 2) {
+                val key = parts[0].trim()
+                val value = parts[1].trim()
+                if (key.isNotBlank()) {
+                    System.setProperty(key, value)
+                }
+            }
+        }
+    }
+}
+
 android {
     namespace = "com.example.prm392_finalproject"
     compileSdk {
@@ -16,6 +33,11 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        
+        // Add BuildConfig fields from .env
+        buildConfigField("String", "CLOUDINARY_CLOUD_NAME", "\"${System.getProperty("CLOUDINARY_CLOUD_NAME") ?: ""}\"")
+        buildConfigField("String", "CLOUDINARY_API_KEY", "\"${System.getProperty("CLOUDINARY_API_KEY") ?: ""}\"")
+        buildConfigField("String", "CLOUDINARY_API_SECRET", "\"${System.getProperty("CLOUDINARY_API_SECRET") ?: ""}\"")
     }
 
     buildTypes {
@@ -30,6 +52,10 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+    }
+    
+    buildFeatures {
+        buildConfig = true
     }
 }
 
@@ -48,8 +74,15 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:4.16.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
     
+    // Cloudinary for image upload
+    implementation("com.cloudinary:cloudinary-android:2.5.0")
+    implementation("com.cloudinary:cloudinary-core:1.36.0")
+    
     // RecyclerView
     implementation("androidx.recyclerview:recyclerview:1.3.2")
+    
+    // SwipeRefreshLayout
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     
     // ViewPager2
     implementation("androidx.viewpager2:viewpager2:1.0.0")

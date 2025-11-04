@@ -2,6 +2,7 @@ package com.example.prm392_finalproject.network;
 
 import com.example.prm392_finalproject.models.AuthResponse;
 import com.example.prm392_finalproject.models.Category;
+import com.example.prm392_finalproject.models.CreateCategoryRequest;
 import com.example.prm392_finalproject.models.CreateOrderRequest;
 import com.example.prm392_finalproject.models.ForgotPasswordRequest;
 import com.example.prm392_finalproject.models.LoginRequest;
@@ -10,14 +11,18 @@ import com.example.prm392_finalproject.models.ProductDetail;
 import com.example.prm392_finalproject.models.ProductResponse;
 import com.example.prm392_finalproject.models.RegisterRequest;
 import com.example.prm392_finalproject.models.ResetPasswordRequest;
+import com.example.prm392_finalproject.models.UpdateCategoryRequest;
 import com.example.prm392_finalproject.models.User;
+import com.example.prm392_finalproject.models.UserResponse;
 import com.example.prm392_finalproject.models.UpdateProfileRequest;
+import com.example.prm392_finalproject.models.UpdateUserRequest;
 import com.example.prm392_finalproject.models.VerifyOtpRequest;
 
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.PATCH;
@@ -49,8 +54,38 @@ public interface ApiService {
     @GET("Category")
     Call<List<Category>> getCategories();
 
+    @GET("Category/{id}")
+    Call<Category> getCategoryById(@Path("id") int categoryId, @Header("Authorization") String token);
+
+    @POST("Category")
+    Call<Category> createCategory(@Header("Authorization") String token, @Body CreateCategoryRequest request);
+
+    @PATCH("Category/{id}")
+    Call<Category> updateCategory(@Path("id") int categoryId, @Header("Authorization") String token,
+            @Body UpdateCategoryRequest request);
+
     @GET("User/me")
     Call<User> getUserProfile(@Header("Authorization") String token);
+
+    @GET("User")
+    Call<UserResponse> getUsers(
+            @Header("Authorization") String token,
+            @Query("Email") String email,
+            @Query("FullName") String fullName,
+            @Query("Phone") String phone,
+            @Query("Role") Integer role,
+            @Query("Page") int page,
+            @Query("Size") int size);
+
+    @GET("User/{id}")
+    Call<User> getUserById(@Path("id") int userId, @Header("Authorization") String token);
+
+    @DELETE("User/{id}")
+    Call<Void> deleteUser(@Path("id") int userId, @Header("Authorization") String token);
+
+    @PATCH("User/{id}")
+    Call<User> updateUser(@Path("id") int userId, @Header("Authorization") String token,
+            @Body UpdateUserRequest request);
 
     @PATCH("User/me")
     Call<User> updateUserProfile(@Header("Authorization") String token, @Body UpdateProfileRequest request);
