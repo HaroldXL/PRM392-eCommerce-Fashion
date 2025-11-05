@@ -7,6 +7,15 @@ public class ProductVariant {
     private String color;
     private int stockQuantity;
 
+    public ProductVariant() {
+    }
+
+    public ProductVariant(String size, String color, int stockQuantity) {
+        this.size = size;
+        this.color = color;
+        this.stockQuantity = stockQuantity;
+    }
+
     public int getId() {
         return id;
     }

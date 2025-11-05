@@ -4,14 +4,18 @@ import com.example.prm392_finalproject.models.AuthResponse;
 import com.example.prm392_finalproject.models.Category;
 import com.example.prm392_finalproject.models.CreateCategoryRequest;
 import com.example.prm392_finalproject.models.CreateOrderRequest;
+import com.example.prm392_finalproject.models.CreateProductRequest;
 import com.example.prm392_finalproject.models.ForgotPasswordRequest;
 import com.example.prm392_finalproject.models.LoginRequest;
 import com.example.prm392_finalproject.models.MessageResponse;
+import com.example.prm392_finalproject.models.Product;
 import com.example.prm392_finalproject.models.ProductDetail;
+import com.example.prm392_finalproject.models.ProductListResponse;
 import com.example.prm392_finalproject.models.ProductResponse;
 import com.example.prm392_finalproject.models.RegisterRequest;
 import com.example.prm392_finalproject.models.ResetPasswordRequest;
 import com.example.prm392_finalproject.models.UpdateCategoryRequest;
+import com.example.prm392_finalproject.models.UpdateProductRequest;
 import com.example.prm392_finalproject.models.User;
 import com.example.prm392_finalproject.models.UserResponse;
 import com.example.prm392_finalproject.models.UpdateProfileRequest;
@@ -35,70 +39,80 @@ import retrofit2.http.Query;
  */
 public interface ApiService {
 
-    @POST("User/login")
-    Call<AuthResponse> login(@Body LoginRequest request);
+        @POST("User/login")
+        Call<AuthResponse> login(@Body LoginRequest request);
 
-    @POST("User/register")
-    Call<AuthResponse> register(@Body RegisterRequest request);
+        @POST("User/register")
+        Call<AuthResponse> register(@Body RegisterRequest request);
 
-    @GET("Product")
-    Call<ProductResponse> getProducts(
-            @Query("page") int page,
-            @Query("size") int size,
-            @Query("filter_by_name") String filterByName,
-            @Query("category_id") Integer categoryId);
+        @GET("Product")
+        Call<ProductListResponse> getProducts(
+                        @Query("page") int page,
+                        @Query("size") int size,
+                        @Query("filter_by_name") String filterByName,
+                        @Query("category_id") Integer categoryId);
 
-    @GET("Product/{id}")
-    Call<ProductDetail> getProductDetail(@Path("id") int productId);
+        @GET("Product/{id}")
+        Call<Product> getProductById(@Path("id") int productId);
 
-    @GET("Category")
-    Call<List<Category>> getCategories();
+        @POST("Product")
+        Call<Product> createProduct(@Header("Authorization") String token, @Body CreateProductRequest request);
 
-    @GET("Category/{id}")
-    Call<Category> getCategoryById(@Path("id") int categoryId, @Header("Authorization") String token);
+        @PATCH("Product/{id}")
+        Call<Product> updateProduct(@Path("id") int productId, @Header("Authorization") String token,
+                        @Body UpdateProductRequest request);
 
-    @POST("Category")
-    Call<Category> createCategory(@Header("Authorization") String token, @Body CreateCategoryRequest request);
+        @GET("Product/{id}")
+        Call<ProductDetail> getProductDetail(@Path("id") int productId);
 
-    @PATCH("Category/{id}")
-    Call<Category> updateCategory(@Path("id") int categoryId, @Header("Authorization") String token,
-            @Body UpdateCategoryRequest request);
+        @GET("Category")
+        Call<List<Category>> getCategories();
 
-    @GET("User/me")
-    Call<User> getUserProfile(@Header("Authorization") String token);
+        @GET("Category/{id}")
+        Call<Category> getCategoryById(@Path("id") int categoryId, @Header("Authorization") String token);
 
-    @GET("User")
-    Call<UserResponse> getUsers(
-            @Header("Authorization") String token,
-            @Query("Email") String email,
-            @Query("FullName") String fullName,
-            @Query("Phone") String phone,
-            @Query("Role") Integer role,
-            @Query("Page") int page,
-            @Query("Size") int size);
+        @POST("Category")
+        Call<Category> createCategory(@Header("Authorization") String token, @Body CreateCategoryRequest request);
 
-    @GET("User/{id}")
-    Call<User> getUserById(@Path("id") int userId, @Header("Authorization") String token);
+        @PATCH("Category/{id}")
+        Call<Category> updateCategory(@Path("id") int categoryId, @Header("Authorization") String token,
+                        @Body UpdateCategoryRequest request);
 
-    @DELETE("User/{id}")
-    Call<Void> deleteUser(@Path("id") int userId, @Header("Authorization") String token);
+        @GET("User/me")
+        Call<User> getUserProfile(@Header("Authorization") String token);
 
-    @PATCH("User/{id}")
-    Call<User> updateUser(@Path("id") int userId, @Header("Authorization") String token,
-            @Body UpdateUserRequest request);
+        @GET("User")
+        Call<UserResponse> getUsers(
+                        @Header("Authorization") String token,
+                        @Query("Email") String email,
+                        @Query("FullName") String fullName,
+                        @Query("Phone") String phone,
+                        @Query("Role") Integer role,
+                        @Query("Page") int page,
+                        @Query("Size") int size);
 
-    @PATCH("User/me")
-    Call<User> updateUserProfile(@Header("Authorization") String token, @Body UpdateProfileRequest request);
+        @GET("User/{id}")
+        Call<User> getUserById(@Path("id") int userId, @Header("Authorization") String token);
 
-    @POST("User/forgot-password")
-    Call<MessageResponse> forgotPassword(@Body ForgotPasswordRequest request);
+        @DELETE("User/{id}")
+        Call<Void> deleteUser(@Path("id") int userId, @Header("Authorization") String token);
 
-    @POST("User/verify-otp")
-    Call<MessageResponse> verifyOtp(@Body VerifyOtpRequest request);
+        @PATCH("User/{id}")
+        Call<User> updateUser(@Path("id") int userId, @Header("Authorization") String token,
+                        @Body UpdateUserRequest request);
 
-    @POST("User/reset-password")
-    Call<MessageResponse> resetPassword(@Body ResetPasswordRequest request);
+        @PATCH("User/me")
+        Call<User> updateUserProfile(@Header("Authorization") String token, @Body UpdateProfileRequest request);
 
-    @POST("Order")
-    Call<MessageResponse> createOrder(@Header("Authorization") String token, @Body CreateOrderRequest request);
+        @POST("User/forgot-password")
+        Call<MessageResponse> forgotPassword(@Body ForgotPasswordRequest request);
+
+        @POST("User/verify-otp")
+        Call<MessageResponse> verifyOtp(@Body VerifyOtpRequest request);
+
+        @POST("User/reset-password")
+        Call<MessageResponse> resetPassword(@Body ResetPasswordRequest request);
+
+        @POST("Order")
+        Call<MessageResponse> createOrder(@Header("Authorization") String token, @Body CreateOrderRequest request);
 }

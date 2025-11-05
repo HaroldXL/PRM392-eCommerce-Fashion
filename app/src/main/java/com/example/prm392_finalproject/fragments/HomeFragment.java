@@ -29,6 +29,7 @@ import com.example.prm392_finalproject.adapters.BannerAdapter;
 import com.example.prm392_finalproject.adapters.CategoryAdapter;
 import com.example.prm392_finalproject.adapters.ProductAdapter;
 import com.example.prm392_finalproject.models.Category;
+import com.example.prm392_finalproject.models.ProductListResponse;
 import com.example.prm392_finalproject.models.ProductResponse;
 import com.example.prm392_finalproject.models.User;
 import com.example.prm392_finalproject.network.ApiService;
@@ -326,13 +327,13 @@ public class HomeFragment extends Fragment {
     private void loadProducts() {
         progressBar.setVisibility(View.VISIBLE);
 
-        apiService.getProducts(currentPage, pageSize, null, null).enqueue(new Callback<ProductResponse>() {
+        apiService.getProducts(currentPage, pageSize, null, null).enqueue(new Callback<ProductListResponse>() {
             @Override
-            public void onResponse(Call<ProductResponse> call, Response<ProductResponse> response) {
+            public void onResponse(Call<ProductListResponse> call, Response<ProductListResponse> response) {
                 progressBar.setVisibility(View.GONE);
 
                 if (response.isSuccessful() && response.body() != null) {
-                    ProductResponse productResponse = response.body();
+                    ProductListResponse productResponse = response.body();
                     productAdapter.setProducts(productResponse.getItems());
                 } else {
                     Toast.makeText(requireContext(), "Failed to load products", Toast.LENGTH_SHORT).show();
@@ -340,7 +341,7 @@ public class HomeFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<ProductResponse> call, Throwable t) {
+            public void onFailure(Call<ProductListResponse> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
                 Toast.makeText(requireContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }

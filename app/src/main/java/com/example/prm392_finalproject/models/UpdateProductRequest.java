@@ -2,39 +2,23 @@ package com.example.prm392_finalproject.models;
 
 import java.util.List;
 
-public class Product {
-    private int id;
-    private int categoryId;
-    private String categoryName;
+public class UpdateProductRequest {
     private String name;
     private String description;
     private String imageUrl;
     private double price;
-    private Category category;
     private List<ProductVariant> productVariants;
 
-    public int getId() {
-        return id;
+    public UpdateProductRequest() {
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(int categoryId) {
-        this.categoryId = categoryId;
-    }
-
-    public String getCategoryName() {
-        return categoryName;
-    }
-
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
+    public UpdateProductRequest(String name, String description, String imageUrl,
+            double price, List<ProductVariant> productVariants) {
+        this.name = name;
+        this.description = description;
+        this.imageUrl = imageUrl;
+        this.price = price;
+        this.productVariants = productVariants;
     }
 
     public String getName() {
@@ -67,14 +51,6 @@ public class Product {
 
     public void setPrice(double price) {
         this.price = price;
-    }
-
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
     }
 
     public List<ProductVariant> getProductVariants() {

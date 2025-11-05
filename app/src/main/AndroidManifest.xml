@@ -150,6 +150,14 @@
             android:screenOrientation="portrait"
             android:parentActivityName=".activities.AdminDashboardActivity"
             android:theme="@style/Theme.PRM392_FinalProject" />
+        
+        <!-- Manage Products Activity -->
+        <activity
+            android:name=".activities.ManageProductsActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".activities.AdminDashboardActivity"
+            android:theme="@style/Theme.PRM392_FinalProject" />
             
     </application>
 

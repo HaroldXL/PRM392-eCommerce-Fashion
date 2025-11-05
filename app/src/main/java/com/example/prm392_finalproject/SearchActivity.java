@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.prm392_finalproject.adapters.ProductAdapter;
 import com.example.prm392_finalproject.models.Product;
+import com.example.prm392_finalproject.models.ProductListResponse;
 import com.example.prm392_finalproject.models.ProductResponse;
 import com.example.prm392_finalproject.network.RetrofitClient;
 import com.example.prm392_finalproject.network.ApiService;
@@ -134,15 +135,15 @@ public class SearchActivity extends AppCompatActivity {
         recyclerView.setVisibility(View.GONE);
 
         ApiService apiService = RetrofitClient.createService(ApiService.class);
-        Call<ProductResponse> call = apiService.getProducts(1, 100, query, null);
+        Call<ProductListResponse> call = apiService.getProducts(1, 100, query, null);
 
-        call.enqueue(new Callback<ProductResponse>() {
+        call.enqueue(new Callback<ProductListResponse>() {
             @Override
-            public void onResponse(Call<ProductResponse> call, Response<ProductResponse> response) {
+            public void onResponse(Call<ProductListResponse> call, Response<ProductListResponse> response) {
                 progressBar.setVisibility(View.GONE);
 
                 if (response.isSuccessful() && response.body() != null) {
-                    ProductResponse productResponse = response.body();
+                    ProductListResponse productResponse = response.body();
 
                     if (productResponse.getItems() != null && !productResponse.getItems().isEmpty()) {
                         productAdapter.setProducts(productResponse.getItems());
@@ -160,7 +161,7 @@ public class SearchActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<ProductResponse> call, Throwable t) {
+            public void onFailure(Call<ProductListResponse> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
                 Toast.makeText(SearchActivity.this,
                         "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();

@@ -50,7 +50,8 @@ public class AdminDashboardActivity extends AppCompatActivity {
         });
 
         cardManageProducts.setOnClickListener(v -> {
-            Toast.makeText(this, "Manage Products - Coming soon", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(AdminDashboardActivity.this, ManageProductsActivity.class);
+            startActivity(intent);
         });
 
         cardManageCategories.setOnClickListener(v -> {
