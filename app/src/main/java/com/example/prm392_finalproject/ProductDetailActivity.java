@@ -133,6 +133,15 @@ public class ProductDetailActivity extends AppCompatActivity {
 
                 if (response.isSuccessful() && response.body() != null) {
                     productDetail = response.body();
+
+                    // Debug: Log product variants
+                    if (productDetail.getProductVariants() != null) {
+                        for (ProductVariant variant : productDetail.getProductVariants()) {
+                            android.util.Log.d("ProductDetail", "Variant loaded - ID: " + variant.getId() +
+                                    ", Size: " + variant.getSize() + ", Color: " + variant.getColor());
+                        }
+                    }
+
                     displayProductDetail();
                 } else {
                     Toast.makeText(ProductDetailActivity.this,
@@ -275,14 +284,19 @@ public class ProductDetailActivity extends AppCompatActivity {
         // Find the selected variant
         for (ProductVariant variant : productDetail.getProductVariants()) {
             if (variant.getSize().equals(selectedSize) && variant.getColor().equals(selectedColor)) {
-                // Create cart item
+                // Log variant ID for debugging
+                android.util.Log.d("ProductDetail", "Selected variant ID: " + variant.getId());
+
+                // Create cart item with variant information
                 CartItem cartItem = new CartItem(
                         productDetail.getId(),
-                        productDetail.getName() + " (" + selectedSize + ", " + selectedColor + ")",
+                        variant.getId(), // productVariantId
+                        productDetail.getName(),
                         productDetail.getImageUrl(),
                         productDetail.getPrice(),
-                        1 // Default quantity
-                );
+                        1, // Default quantity
+                        selectedSize,
+                        selectedColor);
 
                 // Add to cart
                 cartManager.addToCart(cartItem);
@@ -293,6 +307,8 @@ public class ProductDetailActivity extends AppCompatActivity {
                 return;
             }
         }
+
+        Toast.makeText(this, "Variant not found!", Toast.LENGTH_SHORT).show();
     }
 
     private int compareSizes(String s1, String s2) {

@@ -24,6 +24,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -106,14 +107,14 @@ public class CartFragment extends Fragment implements CartAdapter.OnCartItemList
 
     @Override
     public void onQuantityChanged(CartItem item, int newQuantity) {
-        cartManager.updateQuantity(item.getProductId(), newQuantity);
+        cartManager.updateQuantity(item.getProductVariantId(), newQuantity);
         loadCartItems();
         Toast.makeText(requireContext(), "Quantity updated", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onRemoveItem(CartItem item) {
-        cartManager.removeFromCart(item.getProductId());
+        cartManager.removeFromCart(item.getProductVariantId());
         loadCartItems();
         Toast.makeText(requireContext(), "Item removed from cart", Toast.LENGTH_SHORT).show();
     }

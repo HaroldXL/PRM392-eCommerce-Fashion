@@ -74,7 +74,12 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
         }
 
         public void bind(CartItem item) {
-            tvProductName.setText(item.getProductName());
+            // Display product name with size and color
+            String displayName = item.getProductName();
+            if (item.getSize() != null && item.getColor() != null) {
+                displayName += " (" + item.getSize() + ", " + item.getColor() + ")";
+            }
+            tvProductName.setText(displayName);
 
             // Format price in VND
             NumberFormat formatter = NumberFormat.getInstance(Locale.forLanguageTag("vi-VN"));

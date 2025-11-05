@@ -195,31 +195,21 @@
                         android:layout_height="wrap_content">
 
                         <RadioButton
-                            android:id="@+id/rbCOD"
+                            android:id="@+id/rbVNPay"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Cash on Delivery (COD)"
+                            android:text="VNPay"
                             android:textSize="16sp"
                             android:checked="true"
                             android:padding="12dp" />
 
                         <RadioButton
-                            android:id="@+id/rbBankTransfer"
+                            android:id="@+id/rbZaloPay"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Bank Transfer"
+                            android:text="ZaloPay"
                             android:textSize="16sp"
-                            android:padding="12dp"
-                            android:enabled="false" />
-
-                        <RadioButton
-                            android:id="@+id/rbCreditCard"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Credit/Debit Card"
-                            android:textSize="16sp"
-                            android:padding="12dp"
-                            android:enabled="false" />
+                            android:padding="12dp" />
 
                     </RadioGroup>
 

@@ -8,6 +8,8 @@ import com.example.prm392_finalproject.models.CreateProductRequest;
 import com.example.prm392_finalproject.models.ForgotPasswordRequest;
 import com.example.prm392_finalproject.models.LoginRequest;
 import com.example.prm392_finalproject.models.MessageResponse;
+import com.example.prm392_finalproject.models.PaymentInitRequest;
+import com.example.prm392_finalproject.models.PaymentInitResponse;
 import com.example.prm392_finalproject.models.Product;
 import com.example.prm392_finalproject.models.ProductDetail;
 import com.example.prm392_finalproject.models.ProductListResponse;
@@ -115,4 +117,8 @@ public interface ApiService {
 
         @POST("Order")
         Call<MessageResponse> createOrder(@Header("Authorization") String token, @Body CreateOrderRequest request);
+
+        // Payment endpoints
+        @POST("Payment/init")
+        Call<PaymentInitResponse> initPayment(@Header("Authorization") String token, @Body PaymentInitRequest request);
 }

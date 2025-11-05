@@ -1,5 +1,7 @@
 package com.example.prm392_finalproject;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,10 +15,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.prm392_finalproject.models.CartItem;
-import com.example.prm392_finalproject.models.CreateOrderRequest;
-import com.example.prm392_finalproject.models.MessageResponse;
-import com.example.prm392_finalproject.models.Order;
-import com.example.prm392_finalproject.models.OrderItem;
+import com.example.prm392_finalproject.models.PaymentInitRequest;
+import com.example.prm392_finalproject.models.PaymentInitResponse;
+import com.example.prm392_finalproject.models.User;
 import com.example.prm392_finalproject.network.ApiService;
 import com.example.prm392_finalproject.network.RetrofitClient;
 import com.example.prm392_finalproject.utils.CartManager;
@@ -46,6 +47,7 @@ public class OrderActivity extends AppCompatActivity {
     private ApiService apiService;
     private List<CartItem> cartItems;
     private double totalAmount;
+    private int currentUserId = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +62,7 @@ public class OrderActivity extends AppCompatActivity {
         apiService = RetrofitClient.createService(ApiService.class);
 
         loadCartData();
+        loadUserProfile();
         setupListeners();
     }
 
@@ -110,6 +113,29 @@ public class OrderActivity extends AppCompatActivity {
         btnPlaceOrder.setOnClickListener(v -> placeOrder());
     }
 
+    private void loadUserProfile() {
+        String token = "Bearer " + sessionManager.getToken();
+        apiService.getUserProfile(token).enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    User user = response.body();
+                    currentUserId = user.getId();
+
+                    // Pre-fill user information
+                    etShippingName.setText(user.getFullName());
+                    etShippingPhone.setText(user.getPhone());
+                    etShippingAddress.setText(user.getAddress());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                // Silently fail, user can still enter manually
+            }
+        });
+    }
+
     private void placeOrder() {
         // Validate inputs
         String shippingName = etShippingName.getText().toString().trim();
@@ -134,67 +160,86 @@ public class OrderActivity extends AppCompatActivity {
             return;
         }
 
-        // Get payment method
-        String paymentMethod = "COD"; // Default
-        int selectedId = rgPaymentMethod.getCheckedRadioButtonId();
-        if (selectedId == R.id.rbBankTransfer) {
-            paymentMethod = "Bank Transfer";
-        } else if (selectedId == R.id.rbCreditCard) {
-            paymentMethod = "Credit Card";
+        if (currentUserId == 0) {
+            Toast.makeText(this, "Please wait while loading user information", Toast.LENGTH_SHORT).show();
+            return;
         }
 
-        // Create order object
-        Order order = new Order(
-                sessionManager.getUserId(),
+        // Get payment method - VNPay or ZaloPay
+        String paymentMethod = "VNPay"; // Default
+        int selectedId = rgPaymentMethod.getCheckedRadioButtonId();
+        if (selectedId == R.id.rbZaloPay) {
+            paymentMethod = "ZaloPay";
+        }
+
+        // Create payment items from cart
+        List<PaymentInitRequest.PaymentItem> paymentItems = new ArrayList<>();
+        for (CartItem cartItem : cartItems) {
+            // Debug log
+            android.util.Log.d("OrderActivity", "Cart item - ProductVariantId: " +
+                    cartItem.getProductVariantId() + ", Price: " + cartItem.getPrice() +
+                    ", Qty: " + cartItem.getQuantity());
+
+            PaymentInitRequest.PaymentItem item = new PaymentInitRequest.PaymentItem(
+                    cartItem.getProductVariantId(),
+                    cartItem.getPrice(),
+                    cartItem.getQuantity());
+            paymentItems.add(item);
+        }
+
+        // Create payment request
+        PaymentInitRequest request = new PaymentInitRequest(
+                currentUserId,
+                paymentMethod,
                 shippingName,
                 shippingPhone,
                 shippingAddress,
-                paymentMethod);
+                paymentItems);
 
-        // Create order items (Note: we need productVariantId from cart, but CartItem
-        // only has productId)
-        // For now, using productId as productVariantId - you may need to adjust this
-        List<OrderItem> orderItems = new ArrayList<>();
-        for (CartItem cartItem : cartItems) {
-            OrderItem orderItem = new OrderItem(
-                    cartItem.getProductId(), // Should be productVariantId
-                    cartItem.getPrice(),
-                    cartItem.getQuantity());
-            orderItems.add(orderItem);
-        }
-
-        CreateOrderRequest request = new CreateOrderRequest(order, orderItems);
-
-        // Call API
+        // Call Payment API
         progressBar.setVisibility(View.VISIBLE);
         btnPlaceOrder.setEnabled(false);
 
         String token = "Bearer " + sessionManager.getToken();
-        apiService.createOrder(token, request).enqueue(new Callback<MessageResponse>() {
+        apiService.initPayment(token, request).enqueue(new Callback<PaymentInitResponse>() {
             @Override
-            public void onResponse(Call<MessageResponse> call, Response<MessageResponse> response) {
+            public void onResponse(Call<PaymentInitResponse> call, Response<PaymentInitResponse> response) {
                 progressBar.setVisibility(View.GONE);
                 btnPlaceOrder.setEnabled(true);
 
                 if (response.isSuccessful() && response.body() != null) {
-                    Toast.makeText(OrderActivity.this,
-                            "Order placed successfully!",
-                            Toast.LENGTH_LONG).show();
+                    PaymentInitResponse paymentResponse = response.body();
 
-                    // Clear cart
+                    // Clear cart before redirecting to payment
                     cartManager.clearCart();
 
-                    // Go back to main screen
-                    finish();
+                    // Open payment URL in browser
+                    if (paymentResponse.getCheckoutUrl() != null && !paymentResponse.getCheckoutUrl().isEmpty()) {
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW,
+                                Uri.parse(paymentResponse.getCheckoutUrl()));
+                        startActivity(browserIntent);
+
+                        Toast.makeText(OrderActivity.this,
+                                "Redirecting to payment gateway...",
+                                Toast.LENGTH_LONG).show();
+
+                        // Close activity after a delay
+                        btnPlaceOrder.postDelayed(() -> finish(), 2000);
+                    } else {
+                        Toast.makeText(OrderActivity.this,
+                                "Payment initiated successfully! Order ID: " + paymentResponse.getOrderId(),
+                                Toast.LENGTH_LONG).show();
+                        finish();
+                    }
                 } else {
                     Toast.makeText(OrderActivity.this,
-                            "Failed to place order. Please try again.",
+                            "Failed to initialize payment. Please try again.",
                             Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<MessageResponse> call, Throwable t) {
+            public void onFailure(Call<PaymentInitResponse> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
                 btnPlaceOrder.setEnabled(true);
                 Toast.makeText(OrderActivity.this,

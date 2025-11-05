@@ -30,16 +30,34 @@ public class CartManager {
         }
         Type type = new TypeToken<List<CartItem>>() {
         }.getType();
-        return gson.fromJson(json, type);
+        List<CartItem> items = gson.fromJson(json, type);
+
+        // Clean invalid items (productVariantId = 0) - old data before migration
+        List<CartItem> validItems = new ArrayList<>();
+        boolean hasInvalidItems = false;
+        for (CartItem item : items) {
+            if (item.getProductVariantId() > 0) {
+                validItems.add(item);
+            } else {
+                hasInvalidItems = true;
+            }
+        }
+
+        // Save cleaned cart if we removed invalid items
+        if (hasInvalidItems) {
+            saveCart(validItems);
+        }
+
+        return validItems;
     }
 
     public void addToCart(CartItem item) {
         List<CartItem> cartItems = getCartItems();
 
-        // Check if product already exists in cart
+        // Check if product variant already exists in cart
         boolean found = false;
         for (CartItem cartItem : cartItems) {
-            if (cartItem.getProductId() == item.getProductId()) {
+            if (cartItem.getProductVariantId() == item.getProductVariantId()) {
                 cartItem.setQuantity(cartItem.getQuantity() + item.getQuantity());
                 found = true;
                 break;
@@ -53,10 +71,10 @@ public class CartManager {
         saveCart(cartItems);
     }
 
-    public void updateQuantity(int productId, int quantity) {
+    public void updateQuantity(int productVariantId, int quantity) {
         List<CartItem> cartItems = getCartItems();
         for (CartItem item : cartItems) {
-            if (item.getProductId() == productId) {
+            if (item.getProductVariantId() == productVariantId) {
                 item.setQuantity(quantity);
                 break;
             }
@@ -64,9 +82,9 @@ public class CartManager {
         saveCart(cartItems);
     }
 
-    public void removeFromCart(int productId) {
+    public void removeFromCart(int productVariantId) {
         List<CartItem> cartItems = getCartItems();
-        cartItems.removeIf(item -> item.getProductId() == productId);
+        cartItems.removeIf(item -> item.getProductVariantId() == productVariantId);
         saveCart(cartItems);
     }
 
