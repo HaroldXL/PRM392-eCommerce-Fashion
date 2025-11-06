@@ -3,6 +3,9 @@ package com.example.prm392_finalproject;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -22,7 +25,10 @@ import com.example.prm392_finalproject.network.ApiService;
 import com.example.prm392_finalproject.network.RetrofitClient;
 import com.example.prm392_finalproject.utils.CartManager;
 import com.example.prm392_finalproject.utils.SessionManager;
+import com.example.prm392_finalproject.utils.ZaloPayHelper;
 import com.google.android.material.button.MaterialButton;
+
+import org.json.JSONObject;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -32,6 +38,8 @@ import java.util.Locale;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import vn.zalopay.sdk.ZaloPayError;
+import vn.zalopay.sdk.listeners.PayOrderListener;
 
 public class OrderActivity extends AppCompatActivity {
 
@@ -60,6 +68,9 @@ public class OrderActivity extends AppCompatActivity {
         cartManager = new CartManager(this);
         sessionManager = new SessionManager(this);
         apiService = RetrofitClient.createService(ApiService.class);
+
+        // Initialize ZaloPay SDK
+        ZaloPayHelper.init(this);
 
         loadCartData();
         loadUserProfile();
@@ -177,13 +188,11 @@ public class OrderActivity extends AppCompatActivity {
         for (CartItem cartItem : cartItems) {
             // Debug log
             android.util.Log.d("OrderActivity", "Cart item - ProductVariantId: " +
-                    cartItem.getProductVariantId() + ", Price: " + cartItem.getPrice() +
-                    ", Qty: " + cartItem.getQuantity());
+                    cartItem.getProductVariantId() + ", Amount: " + cartItem.getQuantity());
 
             PaymentInitRequest.PaymentItem item = new PaymentInitRequest.PaymentItem(
                     cartItem.getProductVariantId(),
-                    cartItem.getPrice(),
-                    cartItem.getQuantity());
+                    cartItem.getQuantity()); // amount = quantity
             paymentItems.add(item);
         }
 
@@ -210,26 +219,13 @@ public class OrderActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     PaymentInitResponse paymentResponse = response.body();
 
-                    // Clear cart before redirecting to payment
-                    cartManager.clearCart();
-
-                    // Open payment URL in browser
-                    if (paymentResponse.getCheckoutUrl() != null && !paymentResponse.getCheckoutUrl().isEmpty()) {
-                        Intent browserIntent = new Intent(Intent.ACTION_VIEW,
-                                Uri.parse(paymentResponse.getCheckoutUrl()));
-                        startActivity(browserIntent);
-
-                        Toast.makeText(OrderActivity.this,
-                                "Redirecting to payment gateway...",
-                                Toast.LENGTH_LONG).show();
-
-                        // Close activity after a delay
-                        btnPlaceOrder.postDelayed(() -> finish(), 2000);
+                    // Check payment provider
+                    if ("ZaloPay".equalsIgnoreCase(paymentResponse.getProvider())) {
+                        // Handle ZaloPay payment
+                        handleZaloPayPayment(paymentResponse);
                     } else {
-                        Toast.makeText(OrderActivity.this,
-                                "Payment initiated successfully! Order ID: " + paymentResponse.getOrderId(),
-                                Toast.LENGTH_LONG).show();
-                        finish();
+                        // Handle VNPay or other payment methods
+                        handleOtherPayment(paymentResponse);
                     }
                 } else {
                     Toast.makeText(OrderActivity.this,
@@ -256,5 +252,99 @@ public class OrderActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Handle ZaloPay payment using SDK
+     */
+    private void handleZaloPayPayment(PaymentInitResponse paymentResponse) {
+        try {
+            String checkoutUrl = paymentResponse.getCheckoutUrl();
+            String zpTransToken = extractZpTransToken(checkoutUrl);
+
+            if (zpTransToken != null) {
+                Toast.makeText(this, "Opening ZaloPay...", Toast.LENGTH_SHORT).show();
+
+                ZaloPayHelper.payOrder(this, zpTransToken, new PayOrderListener() {
+                    @Override
+                    public void onPaymentSucceeded(String transactionId, String transToken, String appTransID) {
+                        cartManager.clearCart();
+                        Toast.makeText(OrderActivity.this,
+                                "Payment successful! Transaction ID: " + transactionId,
+                                Toast.LENGTH_LONG).show();
+                        finish();
+                    }
+
+                    @Override
+                    public void onPaymentCanceled(String zpTransToken, String appTransID) {
+                        Toast.makeText(OrderActivity.this,
+                                "Payment canceled",
+                                Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onPaymentError(ZaloPayError zaloPayError, String zpTransToken, String appTransID) {
+                        Toast.makeText(OrderActivity.this,
+                                "Payment error: " + zaloPayError.toString(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } else {
+                // Fallback: open in browser if can't extract token
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(checkoutUrl));
+                startActivity(browserIntent);
+                cartManager.clearCart();
+                new Handler(Looper.getMainLooper()).postDelayed(() -> finish(), 2000);
+            }
+        } catch (Exception e) {
+            Log.e("OrderActivity", "Error handling ZaloPay payment", e);
+            Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * Handle other payment methods (VNPay, etc.)
+     */
+    private void handleOtherPayment(PaymentInitResponse paymentResponse) {
+        cartManager.clearCart();
+
+        if (paymentResponse.getCheckoutUrl() != null && !paymentResponse.getCheckoutUrl().isEmpty()) {
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW,
+                    Uri.parse(paymentResponse.getCheckoutUrl()));
+            startActivity(browserIntent);
+
+            Toast.makeText(this, "Redirecting to payment gateway...", Toast.LENGTH_LONG).show();
+
+            new Handler(Looper.getMainLooper()).postDelayed(() -> finish(), 2000);
+        } else {
+            Toast.makeText(this,
+                    "Payment initiated successfully! Order ID: " + paymentResponse.getOrderId(),
+                    Toast.LENGTH_LONG).show();
+            finish();
+        }
+    }
+
+    /**
+     * Extract zpTransToken from ZaloPay checkout URL
+     * URL format: https://qcgateway.zalopay.vn/openinapp?order=BASE64_TOKEN
+     */
+    private String extractZpTransToken(String checkoutUrl) {
+        try {
+            Uri uri = Uri.parse(checkoutUrl);
+            String orderParam = uri.getQueryParameter("order");
+
+            if (orderParam != null) {
+                // Decode base64
+                byte[] decodedBytes = android.util.Base64.decode(orderParam, android.util.Base64.DEFAULT);
+                String decoded = new String(decodedBytes);
+
+                // Parse JSON to get zptranstoken
+                JSONObject json = new JSONObject(decoded);
+                return json.getString("zptranstoken");
+            }
+        } catch (Exception e) {
+            Log.e("OrderActivity", "Error extracting zpTransToken", e);
+        }
+        return null;
     }
 }

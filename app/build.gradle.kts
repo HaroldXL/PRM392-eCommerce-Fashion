@@ -1,3 +1,5 @@
+import kotlin.collections.listOf
+
 plugins {
     alias(libs.plugins.android.application)
 }
@@ -73,6 +75,9 @@ dependencies {
     // Glide for image loading
     implementation("com.github.bumptech.glide:glide:4.16.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
+    
+    // ZaloPay SDK - Copy .aar files to app/libs folder first
+    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.aar", "*.jar"))))
     
     // Cloudinary for image upload
     implementation("com.cloudinary:cloudinary-android:2.5.0")

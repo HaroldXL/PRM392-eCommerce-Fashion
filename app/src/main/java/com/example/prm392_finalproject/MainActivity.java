@@ -22,6 +22,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.prm392_finalproject.fragments.CartFragment;
 import com.example.prm392_finalproject.fragments.HomeFragment;
+import com.example.prm392_finalproject.fragments.MyOrdersFragment;
 import com.example.prm392_finalproject.fragments.ProfileFragment;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -38,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
     private HomeFragment homeFragment;
     private CartFragment cartFragment;
+    private MyOrdersFragment myOrdersFragment;
     private ProfileFragment profileFragment;
 
     @Override
@@ -104,6 +106,10 @@ public class MainActivity extends AppCompatActivity {
                 updateToolbarForHome();
                 return true;
             } else if (itemId == R.id.nav_orders) {
+                if (myOrdersFragment == null) {
+                    myOrdersFragment = new MyOrdersFragment();
+                }
+                loadFragment(myOrdersFragment);
                 updateToolbarForOrders();
                 return true;
             } else if (itemId == R.id.nav_cart) {

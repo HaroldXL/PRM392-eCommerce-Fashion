@@ -70,13 +70,11 @@ public class PaymentInitRequest {
 
     public static class PaymentItem {
         private int productVariantId;
-        private double unitPrice;
-        private int quantity;
+        private int amount;
 
-        public PaymentItem(int productVariantId, double unitPrice, int quantity) {
+        public PaymentItem(int productVariantId, int amount) {
             this.productVariantId = productVariantId;
-            this.unitPrice = unitPrice;
-            this.quantity = quantity;
+            this.amount = amount;
         }
 
         public int getProductVariantId() {
@@ -87,20 +85,12 @@ public class PaymentInitRequest {
             this.productVariantId = productVariantId;
         }
 
-        public double getUnitPrice() {
-            return unitPrice;
+        public int getAmount() {
+            return amount;
         }
 
-        public void setUnitPrice(double unitPrice) {
-            this.unitPrice = unitPrice;
-        }
-
-        public int getQuantity() {
-            return quantity;
-        }
-
-        public void setQuantity(int quantity) {
-            this.quantity = quantity;
+        public void setAmount(int amount) {
+            this.amount = amount;
         }
     }
 }
