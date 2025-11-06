@@ -11,6 +11,7 @@ import com.example.prm392_finalproject.models.MessageResponse;
 import com.example.prm392_finalproject.models.Order;
 import com.example.prm392_finalproject.models.PaymentInitRequest;
 import com.example.prm392_finalproject.models.PaymentInitResponse;
+import com.example.prm392_finalproject.models.PaymentStatus;
 import com.example.prm392_finalproject.models.Product;
 import com.example.prm392_finalproject.models.ProductDetail;
 import com.example.prm392_finalproject.models.ProductListResponse;
@@ -26,16 +27,20 @@ import com.example.prm392_finalproject.models.UpdateUserRequest;
 import com.example.prm392_finalproject.models.VerifyOtpRequest;
 
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
+import retrofit2.http.FieldMap;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+import retrofit2.http.QueryMap;
 
 /**
  * Interface định nghĩa các API endpoints
@@ -126,4 +131,8 @@ public interface ApiService {
         // Payment endpoints
         @POST("Payment/init")
         Call<PaymentInitResponse> initPayment(@Header("Authorization") String token, @Body PaymentInitRequest request);
+
+        @GET("Payment/vnpay-return")
+        Call<PaymentStatus> returnVnPay(@QueryMap Map<String, String> params);
+
 }
