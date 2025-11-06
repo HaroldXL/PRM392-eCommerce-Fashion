@@ -178,6 +178,14 @@
             android:screenOrientation="portrait"
             android:parentActivityName=".activities.AdminDashboardActivity"
             android:theme="@style/Theme.PRM392_FinalProject" />
+        
+        <!-- Manage Orders Activity -->
+        <activity
+            android:name=".activities.ManageOrdersActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".activities.AdminDashboardActivity"
+            android:theme="@style/Theme.PRM392_FinalProject" />
 
     </application>
 

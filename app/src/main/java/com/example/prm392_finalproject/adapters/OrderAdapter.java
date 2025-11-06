@@ -47,12 +47,16 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         // Order ID
         holder.textOrderId.setText("Order #" + order.getId());
 
-        // Status
+        // Status with color coding
         holder.textStatus.setText(order.getStatus());
-        if ("Confirmed".equalsIgnoreCase(order.getStatus())) {
-            holder.textStatus.setTextColor(Color.parseColor("#4CAF50")); // Green
-        } else if ("Pending".equalsIgnoreCase(order.getStatus())) {
+        if ("Pending".equalsIgnoreCase(order.getStatus())) {
             holder.textStatus.setTextColor(Color.parseColor("#FF9800")); // Orange
+        } else if ("Confirmed".equalsIgnoreCase(order.getStatus())) {
+            holder.textStatus.setTextColor(Color.parseColor("#2196F3")); // Blue
+        } else if ("Delivering".equalsIgnoreCase(order.getStatus())) {
+            holder.textStatus.setTextColor(Color.parseColor("#9C27B0")); // Purple
+        } else if ("Completed".equalsIgnoreCase(order.getStatus())) {
+            holder.textStatus.setTextColor(Color.parseColor("#4CAF50")); // Green
         } else {
             holder.textStatus.setTextColor(Color.parseColor("#757575")); // Gray
         }

@@ -7,7 +7,7 @@ public class ApiConfig {
     // - Dùng "https://192.168.x.x:7027/api/" cho thiết bị thật (thay x.x bằng IP
     // máy bạn)
     // - Dùng "https://localhost:7027/api/" nếu test trên máy local
-    public static final String BASE_URL = "https://localhost:7027/api/";
+    public static final String BASE_URL = "https://10.0.2.2:7027/api/";
 
     // Timeout settings (in seconds)
     public static final int CONNECT_TIMEOUT = 30;

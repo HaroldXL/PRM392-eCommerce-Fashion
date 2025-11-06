@@ -21,6 +21,7 @@ import com.example.prm392_finalproject.models.Order;
 import com.example.prm392_finalproject.network.ApiService;
 import com.example.prm392_finalproject.network.RetrofitClient;
 import com.example.prm392_finalproject.utils.SessionManager;
+import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,8 +37,12 @@ public class MyOrdersFragment extends Fragment {
     private OrderAdapter orderAdapter;
     private ProgressBar progressBar;
     private View emptyView;
+    private TabLayout tabLayout;
     private SessionManager sessionManager;
     private ApiService apiService;
+    
+    private List<Order> allMyOrders = new ArrayList<>();
+    private String currentTab = "Pending"; // "Pending", "Confirmed", "Delivering", or "Completed"
 
     @Nullable
     @Override
@@ -54,6 +59,7 @@ public class MyOrdersFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerViewOrders);
         progressBar = view.findViewById(R.id.progressBar);
         emptyView = view.findViewById(R.id.emptyView);
+        tabLayout = view.findViewById(R.id.tabLayout);
 
         // Initialize session and API
         sessionManager = new SessionManager(requireContext());
@@ -63,6 +69,36 @@ public class MyOrdersFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         orderAdapter = new OrderAdapter(new ArrayList<>());
         recyclerView.setAdapter(orderAdapter);
+
+        // Setup TabLayout
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                switch (tab.getPosition()) {
+                    case 0:
+                        currentTab = "Pending";
+                        break;
+                    case 1:
+                        currentTab = "Confirmed";
+                        break;
+                    case 2:
+                        currentTab = "Delivering";
+                        break;
+                    case 3:
+                        currentTab = "Completed";
+                        break;
+                }
+                filterOrdersByStatus();
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
+        });
 
         // Load orders
         loadOrders();
@@ -86,26 +122,20 @@ public class MyOrdersFragment extends Fragment {
 
                 if (response.isSuccessful() && response.body() != null) {
                     List<Order> allOrders = response.body();
-                    List<Order> myOrders = new ArrayList<>();
+                    allMyOrders.clear();
                     int currentUserId = sessionManager.getUserId();
 
                     // Filter orders by current user
                     for (Order order : allOrders) {
                         if (order.getUserId() == currentUserId) {
-                            myOrders.add(order);
+                            allMyOrders.add(order);
                         }
                     }
 
-                    if (myOrders.isEmpty()) {
-                        emptyView.setVisibility(View.VISIBLE);
-                        recyclerView.setVisibility(View.GONE);
-                    } else {
-                        recyclerView.setVisibility(View.VISIBLE);
-                        emptyView.setVisibility(View.GONE);
-                        orderAdapter.setOrders(myOrders);
-                    }
+                    // Filter by status based on current tab
+                    filterOrdersByStatus();
 
-                    Log.d(TAG, "Loaded " + myOrders.size() + " orders for user " + currentUserId);
+                    Log.d(TAG, "Loaded " + allMyOrders.size() + " orders for user " + currentUserId);
                 } else {
                     Log.e(TAG, "Failed to load orders: " + response.code());
                     Toast.makeText(requireContext(), "Failed to load orders", Toast.LENGTH_SHORT).show();
@@ -121,6 +151,27 @@ public class MyOrdersFragment extends Fragment {
                 Toast.makeText(requireContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void filterOrdersByStatus() {
+        List<Order> filteredOrders = new ArrayList<>();
+        
+        for (Order order : allMyOrders) {
+            if (currentTab.equalsIgnoreCase(order.getStatus())) {
+                filteredOrders.add(order);
+            }
+        }
+        
+        if (filteredOrders.isEmpty()) {
+            emptyView.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
+        } else {
+            recyclerView.setVisibility(View.VISIBLE);
+            emptyView.setVisibility(View.GONE);
+            orderAdapter.setOrders(filteredOrders);
+        }
+        
+        Log.d(TAG, "Filtered " + filteredOrders.size() + " orders with status: " + currentTab);
     }
 
     @Override

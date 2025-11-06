@@ -19,6 +19,7 @@ import com.example.prm392_finalproject.models.ProductResponse;
 import com.example.prm392_finalproject.models.RegisterRequest;
 import com.example.prm392_finalproject.models.ResetPasswordRequest;
 import com.example.prm392_finalproject.models.UpdateCategoryRequest;
+import com.example.prm392_finalproject.models.UpdateOrderRequest;
 import com.example.prm392_finalproject.models.UpdateProductRequest;
 import com.example.prm392_finalproject.models.User;
 import com.example.prm392_finalproject.models.UserResponse;
@@ -38,6 +39,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
@@ -127,6 +129,15 @@ public interface ApiService {
 
         @POST("Order")
         Call<MessageResponse> createOrder(@Header("Authorization") String token, @Body CreateOrderRequest request);
+
+        @PUT("Order/{id}")
+        Call<Void> updateOrder(@Path("id") int orderId, @Header("Authorization") String token, @Body UpdateOrderRequest request);
+
+        @DELETE("Order/{id}")
+        Call<Void> deleteOrder(@Path("id") int orderId, @Header("Authorization") String token);
+
+        @PATCH("Order/{id}/status")
+        Call<Void> updateOrderStatus(@Path("id") int orderId, @Header("Authorization") String token, @Body com.google.gson.JsonObject statusUpdate);
 
         // Payment endpoints
         @POST("Payment/init")

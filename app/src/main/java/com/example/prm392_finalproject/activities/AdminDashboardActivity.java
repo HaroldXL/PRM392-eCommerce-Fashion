@@ -16,7 +16,7 @@ import com.google.android.material.button.MaterialButton;
 public class AdminDashboardActivity extends AppCompatActivity {
 
     private SessionManager sessionManager;
-    private CardView cardManageUsers, cardManageProducts, cardManageCategories;
+    private CardView cardManageUsers, cardManageProducts, cardManageCategories, cardManageOrders;
     private MaterialButton btnLogout;
 
     @Override
@@ -40,6 +40,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
         cardManageUsers = findViewById(R.id.cardManageUsers);
         cardManageProducts = findViewById(R.id.cardManageProducts);
         cardManageCategories = findViewById(R.id.cardManageCategories);
+        cardManageOrders = findViewById(R.id.cardManageOrders);
         btnLogout = findViewById(R.id.btnLogout);
     }
 
@@ -56,6 +57,11 @@ public class AdminDashboardActivity extends AppCompatActivity {
 
         cardManageCategories.setOnClickListener(v -> {
             Intent intent = new Intent(AdminDashboardActivity.this, ManageCategoriesActivity.class);
+            startActivity(intent);
+        });
+
+        cardManageOrders.setOnClickListener(v -> {
+            Intent intent = new Intent(AdminDashboardActivity.this, ManageOrdersActivity.class);
             startActivity(intent);
         });
 

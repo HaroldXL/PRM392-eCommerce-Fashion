@@ -6,6 +6,16 @@
     android:orientation="vertical"
     android:background="#F7FAFD">
 
+    <!-- Toolbar -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#3B82F6"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:titleTextColor="@android:color/white" />
+
     <!-- Tab Layout -->
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
@@ -20,6 +30,11 @@
         app:tabSelectedTextColor="#3B82F6"
         app:tabTextColor="#666666"
         app:tabTextAppearance="@style/TabTextStyle">
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="All" />
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
@@ -83,18 +98,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="No orders yet"
+                android:text="No orders found"
                 android:textColor="#999999"
                 android:textSize="16sp"
                 android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Start shopping to create your first order"
-                android:textColor="#CCCCCC"
-                android:textSize="14sp" />
 
         </LinearLayout>
 
