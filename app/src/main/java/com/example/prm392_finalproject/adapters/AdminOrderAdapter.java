@@ -1,6 +1,7 @@
 package com.example.prm392_finalproject.adapters;
 
 import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,24 +55,35 @@ public class AdminOrderAdapter extends RecyclerView.Adapter<AdminOrderAdapter.Or
         // User ID
         holder.textUserId.setText("User ID: " + order.getUserId());
 
-        // Status with color coding and background
+        // Status with color coding and rounded background
         holder.textStatus.setText(order.getStatus());
+        String statusBgColor, statusTextColor;
+
         if ("Pending".equalsIgnoreCase(order.getStatus())) {
-            holder.textStatus.setTextColor(Color.parseColor("#FF9800")); // Orange text
-            holder.textStatus.setBackgroundColor(Color.parseColor("#FFF3E0")); // Light orange background
+            statusTextColor = "#FF9800"; // Orange text
+            statusBgColor = "#FFF3E0"; // Light orange background
         } else if ("Confirmed".equalsIgnoreCase(order.getStatus())) {
-            holder.textStatus.setTextColor(Color.parseColor("#2196F3")); // Blue text
-            holder.textStatus.setBackgroundColor(Color.parseColor("#E3F2FD")); // Light blue background
+            statusTextColor = "#2196F3"; // Blue text
+            statusBgColor = "#E3F2FD"; // Light blue background
         } else if ("Delivering".equalsIgnoreCase(order.getStatus())) {
-            holder.textStatus.setTextColor(Color.parseColor("#9C27B0")); // Purple text
-            holder.textStatus.setBackgroundColor(Color.parseColor("#F3E5F5")); // Light purple background
+            statusTextColor = "#9C27B0"; // Purple text
+            statusBgColor = "#F3E5F5"; // Light purple background
         } else if ("Completed".equalsIgnoreCase(order.getStatus())) {
-            holder.textStatus.setTextColor(Color.parseColor("#4CAF50")); // Green text
-            holder.textStatus.setBackgroundColor(Color.parseColor("#E8F5E9")); // Light green background
+            statusTextColor = "#4CAF50"; // Green text
+            statusBgColor = "#E8F5E9"; // Light green background
         } else {
-            holder.textStatus.setTextColor(Color.parseColor("#757575")); // Gray text
-            holder.textStatus.setBackgroundColor(Color.parseColor("#F5F5F5")); // Light gray background
+            statusTextColor = "#757575"; // Gray text
+            statusBgColor = "#F5F5F5"; // Light gray background
         }
+
+        holder.textStatus.setTextColor(Color.parseColor(statusTextColor));
+
+        // Create rounded background drawable
+        GradientDrawable drawable = new GradientDrawable();
+        drawable.setShape(GradientDrawable.RECTANGLE);
+        drawable.setColor(Color.parseColor(statusBgColor));
+        drawable.setCornerRadius(12f); // 12dp corner radius
+        holder.textStatus.setBackground(drawable);
 
         // Payment Status
         holder.textPaymentStatus.setText(order.getPaymentStatus());

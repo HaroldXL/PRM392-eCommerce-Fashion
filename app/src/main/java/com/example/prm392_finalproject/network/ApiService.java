@@ -131,13 +131,15 @@ public interface ApiService {
         Call<MessageResponse> createOrder(@Header("Authorization") String token, @Body CreateOrderRequest request);
 
         @PUT("Order/{id}")
-        Call<Void> updateOrder(@Path("id") int orderId, @Header("Authorization") String token, @Body UpdateOrderRequest request);
+        Call<Void> updateOrder(@Path("id") int orderId, @Header("Authorization") String token,
+                        @Body UpdateOrderRequest request);
 
         @DELETE("Order/{id}")
         Call<Void> deleteOrder(@Path("id") int orderId, @Header("Authorization") String token);
 
         @PATCH("Order/{id}/status")
-        Call<Void> updateOrderStatus(@Path("id") int orderId, @Header("Authorization") String token, @Body com.google.gson.JsonObject statusUpdate);
+        Call<Void> updateOrderStatus(@Path("id") int orderId, @Header("Authorization") String token,
+                        @Body com.google.gson.JsonObject statusUpdate);
 
         // Payment endpoints
         @POST("Payment/init")

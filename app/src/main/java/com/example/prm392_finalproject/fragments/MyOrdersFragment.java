@@ -40,7 +40,7 @@ public class MyOrdersFragment extends Fragment {
     private TabLayout tabLayout;
     private SessionManager sessionManager;
     private ApiService apiService;
-    
+
     private List<Order> allMyOrders = new ArrayList<>();
     private String currentTab = "Pending"; // "Pending", "Confirmed", "Delivering", or "Completed"
 
@@ -155,13 +155,13 @@ public class MyOrdersFragment extends Fragment {
 
     private void filterOrdersByStatus() {
         List<Order> filteredOrders = new ArrayList<>();
-        
+
         for (Order order : allMyOrders) {
             if (currentTab.equalsIgnoreCase(order.getStatus())) {
                 filteredOrders.add(order);
             }
         }
-        
+
         if (filteredOrders.isEmpty()) {
             emptyView.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.GONE);
@@ -170,7 +170,7 @@ public class MyOrdersFragment extends Fragment {
             emptyView.setVisibility(View.GONE);
             orderAdapter.setOrders(filteredOrders);
         }
-        
+
         Log.d(TAG, "Filtered " + filteredOrders.size() + " orders with status: " + currentTab);
     }
 

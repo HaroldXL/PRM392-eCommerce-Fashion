@@ -7,8 +7,8 @@ public class UpdateOrderRequest {
     private String shippingAddress;
     private String paymentMethod;
 
-    public UpdateOrderRequest(int userId, String shippingName, String shippingPhone, 
-                            String shippingAddress, String paymentMethod) {
+    public UpdateOrderRequest(int userId, String shippingName, String shippingPhone,
+            String shippingAddress, String paymentMethod) {
         this.userId = userId;
         this.shippingName = shippingName;
         this.shippingPhone = shippingPhone;

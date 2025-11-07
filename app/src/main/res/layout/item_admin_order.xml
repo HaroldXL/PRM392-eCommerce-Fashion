@@ -30,7 +30,7 @@
                 android:layout_weight="1"
                 android:text="Order #1"
                 android:textColor="#1A1A1A"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -38,13 +38,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Pending"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp"
-                android:paddingTop="6dp"
-                android:paddingBottom="6dp"
-                android:background="@drawable/bg_rounded_12" />
+                android:textSize="11sp"
+                android:textColor="#FFFFFF"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="3dp"
+                android:paddingBottom="3dp" />
 
         </LinearLayout>
 
@@ -259,24 +258,28 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnDelete"
                 android:layout_width="wrap_content"
-                android:layout_height="48dp"
+                android:layout_height="40dp"
                 android:text="Delete"
                 android:textColor="@android:color/white"
-                android:textSize="14sp"
+                android:textSize="13sp"
                 app:backgroundTint="#EF4444"
-                app:cornerRadius="12dp"
+                app:cornerRadius="8dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
                 android:layout_marginEnd="8dp"
                 style="@style/Widget.Material3.Button" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnUpdateStatus"
                 android:layout_width="wrap_content"
-                android:layout_height="48dp"
+                android:layout_height="40dp"
                 android:text="Next Status"
                 android:textColor="@android:color/white"
-                android:textSize="14sp"
+                android:textSize="13sp"
                 app:backgroundTint="#3B82F6"
-                app:cornerRadius="12dp"
+                app:cornerRadius="8dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
                 style="@style/Widget.Material3.Button" />
 
         </LinearLayout>

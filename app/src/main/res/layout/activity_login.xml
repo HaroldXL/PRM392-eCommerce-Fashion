@@ -16,11 +16,11 @@
         <!-- Logo/Icon Area -->
         <ImageView
             android:id="@+id/ivLogo"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_marginTop="60dp"
-            android:layout_marginBottom="32dp"
-            android:src="@mipmap/ic_launcher"
+            android:layout_width="160dp"
+            android:layout_height="120dp"
+            android:layout_marginTop="100dp"
+            android:layout_marginBottom="12dp"
+            android:src="@drawable/logo_shop"
             android:contentDescription="@string/app_name" />
 
         <!-- Title -->
