@@ -71,6 +71,9 @@ public class AdminOrderAdapter extends RecyclerView.Adapter<AdminOrderAdapter.Or
         } else if ("Completed".equalsIgnoreCase(order.getStatus())) {
             statusTextColor = "#4CAF50"; // Green text
             statusBgColor = "#E8F5E9"; // Light green background
+        } else if ("Cancelled".equalsIgnoreCase(order.getStatus())) {
+            statusTextColor = "#EF4444"; // Red text
+            statusBgColor = "#FEE2E2"; // Light red background
         } else {
             statusTextColor = "#757575"; // Gray text
             statusBgColor = "#F5F5F5"; // Light gray background
@@ -113,9 +116,9 @@ public class AdminOrderAdapter extends RecyclerView.Adapter<AdminOrderAdapter.Or
         holder.textCustomerPhone.setText(order.getShippingPhone());
 
         // Update Status Button
-        if ("Completed".equalsIgnoreCase(order.getStatus())) {
+        if ("Completed".equalsIgnoreCase(order.getStatus()) || "Cancelled".equalsIgnoreCase(order.getStatus())) {
             holder.btnUpdateStatus.setEnabled(false);
-            holder.btnUpdateStatus.setText("Completed");
+            holder.btnUpdateStatus.setText(order.getStatus());
             holder.btnUpdateStatus.setAlpha(0.5f);
         } else {
             holder.btnUpdateStatus.setEnabled(true);
@@ -126,6 +129,18 @@ public class AdminOrderAdapter extends RecyclerView.Adapter<AdminOrderAdapter.Or
                     listener.onOrderAction("UPDATE_STATUS", order);
                 }
             });
+        }
+
+        // Cancel Button - Only show for Pending and Confirmed orders
+        if ("Pending".equalsIgnoreCase(order.getStatus()) || "Confirmed".equalsIgnoreCase(order.getStatus())) {
+            holder.btnCancelOrder.setVisibility(View.VISIBLE);
+            holder.btnCancelOrder.setOnClickListener(v -> {
+                if (listener != null) {
+                    listener.onOrderAction("CANCEL", order);
+                }
+            });
+        } else {
+            holder.btnCancelOrder.setVisibility(View.GONE);
         }
 
         // Delete Button
@@ -161,7 +176,7 @@ public class AdminOrderAdapter extends RecyclerView.Adapter<AdminOrderAdapter.Or
         TextView textOrderId, textUserId, textStatus, textPaymentStatus, textDate, textTotal;
         TextView textPaymentMethod, textItemsCount, textShippingInfo;
         TextView textCustomerName, textCustomerPhone;
-        Button btnUpdateStatus, btnDelete;
+        Button btnUpdateStatus, btnDelete, btnCancelOrder;
 
         public OrderViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -178,6 +193,7 @@ public class AdminOrderAdapter extends RecyclerView.Adapter<AdminOrderAdapter.Or
             textCustomerPhone = itemView.findViewById(R.id.textCustomerPhone);
             btnUpdateStatus = itemView.findViewById(R.id.btnUpdateStatus);
             btnDelete = itemView.findViewById(R.id.btnDelete);
+            btnCancelOrder = itemView.findViewById(R.id.btnCancelOrder);
         }
     }
 }

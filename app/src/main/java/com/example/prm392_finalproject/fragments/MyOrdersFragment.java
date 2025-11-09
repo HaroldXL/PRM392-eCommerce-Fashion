@@ -21,7 +21,9 @@ import com.example.prm392_finalproject.models.Order;
 import com.example.prm392_finalproject.network.ApiService;
 import com.example.prm392_finalproject.network.RetrofitClient;
 import com.example.prm392_finalproject.utils.SessionManager;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.tabs.TabLayout;
+import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +32,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MyOrdersFragment extends Fragment {
+public class MyOrdersFragment extends Fragment implements OrderAdapter.OnOrderActionListener {
     private static final String TAG = "MyOrdersFragment";
 
     private RecyclerView recyclerView;
@@ -42,7 +44,7 @@ public class MyOrdersFragment extends Fragment {
     private ApiService apiService;
 
     private List<Order> allMyOrders = new ArrayList<>();
-    private String currentTab = "Pending"; // "Pending", "Confirmed", "Delivering", or "Completed"
+    private String currentTab = "Pending"; // "Pending", "Confirmed", "Delivering", "Completed", or "Cancelled"
 
     @Nullable
     @Override
@@ -68,6 +70,7 @@ public class MyOrdersFragment extends Fragment {
         // Setup RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         orderAdapter = new OrderAdapter(new ArrayList<>());
+        orderAdapter.setOnOrderActionListener(this);
         recyclerView.setAdapter(orderAdapter);
 
         // Setup TabLayout
@@ -86,6 +89,9 @@ public class MyOrdersFragment extends Fragment {
                         break;
                     case 3:
                         currentTab = "Completed";
+                        break;
+                    case 4:
+                        currentTab = "Cancelled";
                         break;
                 }
                 filterOrdersByStatus();
@@ -179,5 +185,57 @@ public class MyOrdersFragment extends Fragment {
         super.onResume();
         // Reload orders when fragment becomes visible
         loadOrders();
+    }
+
+    @Override
+    public void onCancelOrder(Order order, int position) {
+        // Show confirmation dialog
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Cancel Order")
+                .setMessage("Are you sure you want to cancel this order?")
+                .setPositiveButton("Yes, Cancel", (dialog, which) -> {
+                    performCancelOrder(order);
+                })
+                .setNegativeButton("No", null)
+                .show();
+    }
+
+    private void performCancelOrder(Order order) {
+        String token = sessionManager.getToken();
+        if (token == null || token.isEmpty()) {
+            Toast.makeText(requireContext(), "Please login first", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        progressBar.setVisibility(View.VISIBLE);
+
+        // Create JSON object for status update
+        // API expects lowercase "cancelled"
+        JsonObject statusUpdate = new JsonObject();
+        statusUpdate.addProperty("status", "cancelled");
+
+        apiService.updateOrderStatus(order.getId(), "Bearer " + token, statusUpdate)
+                .enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {
+                        progressBar.setVisibility(View.GONE);
+
+                        if (response.isSuccessful()) {
+                            Toast.makeText(requireContext(), "Order cancelled successfully", Toast.LENGTH_SHORT).show();
+                            // Reload orders to refresh the list
+                            loadOrders();
+                        } else {
+                            Log.e(TAG, "Failed to cancel order: " + response.code());
+                            Toast.makeText(requireContext(), "Failed to cancel order", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {
+                        progressBar.setVisibility(View.GONE);
+                        Log.e(TAG, "Error cancelling order", t);
+                        Toast.makeText(requireContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 }

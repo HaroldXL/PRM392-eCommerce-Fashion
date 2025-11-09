@@ -4,6 +4,7 @@ public class PaymentStatus {
     private String message;
     private boolean result;
     private String orderId;
+    private Double amount;
 
     // Getters
     public String getMessage() {
@@ -18,6 +19,10 @@ public class PaymentStatus {
         return orderId;
     }
 
+    public Double getAmount() {
+        return amount;
+    }
+
     // Setters (optional, useful if you use Gson)
     public void setMessage(String message) {
         this.message = message;
@@ -29,5 +34,9 @@ public class PaymentStatus {
 
     public void setOrderId(String orderId) {
         this.orderId = orderId;
+    }
+
+    public void setAmount(Double amount) {
+        this.amount = amount;
     }
 }

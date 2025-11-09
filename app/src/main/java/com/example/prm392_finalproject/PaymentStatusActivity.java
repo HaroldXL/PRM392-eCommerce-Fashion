@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.prm392_finalproject.models.PaymentStatus;
 import com.example.prm392_finalproject.network.ApiService;
 import com.example.prm392_finalproject.network.RetrofitClient;
+import com.example.prm392_finalproject.utils.NotificationHelper;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.HashMap;
@@ -45,7 +46,7 @@ public class PaymentStatusActivity extends AppCompatActivity {
         btnRetry = findViewById(R.id.btnRetryPaymentCheck);
         btnGoHome = findViewById(R.id.btnGoHome);
 
-//        btnRetry.setOnClickListener(v -> checkPaymentStatus());
+        // btnRetry.setOnClickListener(v -> checkPaymentStatus());
 
         apiService = RetrofitClient.createService(ApiService.class);
 
@@ -64,7 +65,7 @@ public class PaymentStatusActivity extends AppCompatActivity {
                 Map<String, String> queryMap = extractVnPayQueryParams(data);
                 forwardVnPayToBackend(queryMap);
             } else if ("/zalopay".equalsIgnoreCase(host)) {
-//                handleZalopay(data);
+                // handleZalopay(data);
             }
         }
     }
@@ -78,7 +79,7 @@ public class PaymentStatusActivity extends AppCompatActivity {
     private Map<String, String> extractVnPayQueryParams(Uri uri) {
         Map<String, String> params = new HashMap<>();
         for (String key : uri.getQueryParameterNames()) {
-            if(key.startsWith("vnp_") == false)
+            if (key.startsWith("vnp_") == false)
                 continue;
             Log.d("VnpayParam", key + ": " + uri.getQueryParameter(key));
             params.put(key, uri.getQueryParameter(key));
@@ -97,7 +98,10 @@ public class PaymentStatusActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     PaymentStatus result = response.body();
                     Log.d("paymentResponse", response.body().toString());
-                    if(result.isResult()) {
+                    if (result.isResult()) {
+                        // Payment successful - Show notification
+                        showSuccessNotification(result);
+
                         imgStatus.setImageResource(R.drawable.ic_payment_success);
                         tvTitle.setText("Payment Successful!");
                         tvMessage.setText("Your order ID: " + result.getOrderId());
@@ -115,6 +119,7 @@ public class PaymentStatusActivity extends AppCompatActivity {
                     btnRetry.setVisibility(View.VISIBLE);
                 }
             }
+
             @Override
             public void onFailure(Call<PaymentStatus> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
@@ -126,5 +131,23 @@ public class PaymentStatusActivity extends AppCompatActivity {
         });
     }
 
-}
+    /**
+     * Show success notification when payment is confirmed
+     */
+    private void showSuccessNotification(PaymentStatus paymentStatus) {
+        try {
+            // Get order amount from payment status or use 0 as fallback
+            double orderAmount = paymentStatus.getAmount() != null ? paymentStatus.getAmount() : 0.0;
 
+            NotificationHelper.showOrderPlacedNotification(
+                    this,
+                    String.valueOf(paymentStatus.getOrderId()),
+                    orderAmount);
+
+            Log.d("PaymentStatus", "Notification shown for Order ID: " + paymentStatus.getOrderId());
+        } catch (Exception e) {
+            Log.e("PaymentStatus", "Error showing notification", e);
+        }
+    }
+
+}

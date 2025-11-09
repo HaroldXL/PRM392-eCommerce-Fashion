@@ -31,10 +31,7 @@ import com.example.prm392_finalproject.network.RetrofitClient;
 import com.example.prm392_finalproject.utils.CartManager;
 import com.example.prm392_finalproject.utils.NotificationHelper;
 import com.example.prm392_finalproject.utils.SessionManager;
-import com.example.prm392_finalproject.utils.ZaloPayHelper;
 import com.google.android.material.button.MaterialButton;
-
-import org.json.JSONObject;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -44,8 +41,6 @@ import java.util.Locale;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import vn.zalopay.sdk.ZaloPayError;
-import vn.zalopay.sdk.listeners.PayOrderListener;
 
 public class OrderActivity extends AppCompatActivity {
 
@@ -76,9 +71,6 @@ public class OrderActivity extends AppCompatActivity {
         cartManager = new CartManager(this);
         sessionManager = new SessionManager(this);
         apiService = RetrofitClient.createService(ApiService.class);
-
-        // Initialize ZaloPay SDK
-        ZaloPayHelper.init(this);
 
         // Create notification channel and request permission
         NotificationHelper.createNotificationChannel(this);
@@ -188,12 +180,8 @@ public class OrderActivity extends AppCompatActivity {
             return;
         }
 
-        // Get payment method - VNPay or ZaloPay
-        String paymentMethod = "VNPay"; // Default
-        int selectedId = rgPaymentMethod.getCheckedRadioButtonId();
-        if (selectedId == R.id.rbZaloPay) {
-            paymentMethod = "ZaloPay";
-        }
+        // Get payment method - VNPay only
+        String paymentMethod = "VNPay";
 
         // Create payment items from cart
         List<PaymentInitRequest.PaymentItem> paymentItems = new ArrayList<>();
@@ -231,14 +219,8 @@ public class OrderActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     PaymentInitResponse paymentResponse = response.body();
 
-                    // Check payment provider
-                    if ("ZaloPay".equalsIgnoreCase(paymentResponse.getProvider())) {
-                        // Handle ZaloPay payment
-                        handleZaloPayPayment(paymentResponse);
-                    } else {
-                        // Handle VNPay or other payment methods
-                        handleOtherPayment(paymentResponse);
-                    }
+                    // Handle VNPay payment
+                    handleVNPayPayment(paymentResponse);
                 } else {
                     Toast.makeText(OrderActivity.this,
                             "Failed to initialize payment. Please try again.",
@@ -294,71 +276,10 @@ public class OrderActivity extends AppCompatActivity {
     }
 
     /**
-     * Handle ZaloPay payment using SDK
+     * Handle VNPay payment
      */
-    private void handleZaloPayPayment(PaymentInitResponse paymentResponse) {
-        try {
-            String checkoutUrl = paymentResponse.getCheckoutUrl();
-            String zpTransToken = extractZpTransToken(checkoutUrl);
-
-            if (zpTransToken != null) {
-                Toast.makeText(this, "Opening ZaloPay...", Toast.LENGTH_SHORT).show();
-
-                ZaloPayHelper.payOrder(this, zpTransToken, new PayOrderListener() {
-                    @Override
-                    public void onPaymentSucceeded(String transactionId, String transToken, String appTransID) {
-                        cartManager.clearCart();
-
-                        // Show notification
-                        NotificationHelper.showOrderPlacedNotification(
-                                OrderActivity.this,
-                                appTransID,
-                                totalAmount);
-
-                        Toast.makeText(OrderActivity.this,
-                                "Payment successful! Transaction ID: " + transactionId,
-                                Toast.LENGTH_LONG).show();
-                        finish();
-                    }
-
-                    @Override
-                    public void onPaymentCanceled(String zpTransToken, String appTransID) {
-                        Toast.makeText(OrderActivity.this,
-                                "Payment canceled",
-                                Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onPaymentError(ZaloPayError zaloPayError, String zpTransToken, String appTransID) {
-                        Toast.makeText(OrderActivity.this,
-                                "Payment error: " + zaloPayError.toString(),
-                                Toast.LENGTH_SHORT).show();
-                    }
-                });
-            } else {
-                // Fallback: open in browser if can't extract token
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(checkoutUrl));
-                startActivity(browserIntent);
-                cartManager.clearCart();
-                new Handler(Looper.getMainLooper()).postDelayed(() -> finish(), 2000);
-            }
-        } catch (Exception e) {
-            Log.e("OrderActivity", "Error handling ZaloPay payment", e);
-            Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    /**
-     * Handle other payment methods (VNPay, etc.)
-     */
-    private void handleOtherPayment(PaymentInitResponse paymentResponse) {
+    private void handleVNPayPayment(PaymentInitResponse paymentResponse) {
         cartManager.clearCart();
-
-        // Show notification for order placed
-        NotificationHelper.showOrderPlacedNotification(
-                this,
-                String.valueOf(paymentResponse.getOrderId()),
-                totalAmount);
 
         if (paymentResponse.getCheckoutUrl() != null && !paymentResponse.getCheckoutUrl().isEmpty()) {
             Intent browserIntent = new Intent(Intent.ACTION_VIEW,
@@ -374,29 +295,5 @@ public class OrderActivity extends AppCompatActivity {
                     Toast.LENGTH_LONG).show();
             finish();
         }
-    }
-
-    /**
-     * Extract zpTransToken from ZaloPay checkout URL
-     * URL format: https://qcgateway.zalopay.vn/openinapp?order=BASE64_TOKEN
-     */
-    private String extractZpTransToken(String checkoutUrl) {
-        try {
-            Uri uri = Uri.parse(checkoutUrl);
-            String orderParam = uri.getQueryParameter("order");
-
-            if (orderParam != null) {
-                // Decode base64
-                byte[] decodedBytes = android.util.Base64.decode(orderParam, android.util.Base64.DEFAULT);
-                String decoded = new String(decodedBytes);
-
-                // Parse JSON to get zptranstoken
-                JSONObject json = new JSONObject(decoded);
-                return json.getString("zptranstoken");
-            }
-        } catch (Exception e) {
-            Log.e("OrderActivity", "Error extracting zpTransToken", e);
-        }
-        return null;
     }
 }

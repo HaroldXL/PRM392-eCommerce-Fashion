@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.prm392_finalproject.R;
 import com.example.prm392_finalproject.models.Order;
+import com.google.android.material.button.MaterialButton;
 
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -24,12 +25,21 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
     private final NumberFormat currencyFormat;
     private final SimpleDateFormat inputDateFormat;
     private final SimpleDateFormat outputDateFormat;
+    private OnOrderActionListener listener;
+
+    public interface OnOrderActionListener {
+        void onCancelOrder(Order order, int position);
+    }
 
     public OrderAdapter(List<Order> orders) {
         this.orders = orders;
         this.currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
         this.inputDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault());
         this.outputDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+    }
+
+    public void setOnOrderActionListener(OnOrderActionListener listener) {
+        this.listener = listener;
     }
 
     @NonNull
@@ -51,14 +61,22 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         holder.textStatus.setText(order.getStatus());
         if ("Pending".equalsIgnoreCase(order.getStatus())) {
             holder.textStatus.setTextColor(Color.parseColor("#FF9800")); // Orange
+            holder.btnCancelOrder.setVisibility(View.VISIBLE);
         } else if ("Confirmed".equalsIgnoreCase(order.getStatus())) {
             holder.textStatus.setTextColor(Color.parseColor("#2196F3")); // Blue
+            holder.btnCancelOrder.setVisibility(View.GONE);
         } else if ("Delivering".equalsIgnoreCase(order.getStatus())) {
             holder.textStatus.setTextColor(Color.parseColor("#9C27B0")); // Purple
+            holder.btnCancelOrder.setVisibility(View.GONE);
         } else if ("Completed".equalsIgnoreCase(order.getStatus())) {
             holder.textStatus.setTextColor(Color.parseColor("#4CAF50")); // Green
+            holder.btnCancelOrder.setVisibility(View.GONE);
+        } else if ("Cancelled".equalsIgnoreCase(order.getStatus())) {
+            holder.textStatus.setTextColor(Color.parseColor("#EF4444")); // Red
+            holder.btnCancelOrder.setVisibility(View.GONE);
         } else {
             holder.textStatus.setTextColor(Color.parseColor("#757575")); // Gray
+            holder.btnCancelOrder.setVisibility(View.GONE);
         }
 
         // Date
@@ -77,6 +95,13 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
 
         // Shipping info
         holder.textShippingInfo.setText(order.getShippingAddress());
+
+        // Cancel button click
+        holder.btnCancelOrder.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onCancelOrder(order, position);
+            }
+        });
     }
 
     @Override
@@ -114,6 +139,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         TextView textPaymentMethod;
         TextView textItemsCount;
         TextView textShippingInfo;
+        MaterialButton btnCancelOrder;
 
         public OrderViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -124,6 +150,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
             textPaymentMethod = itemView.findViewById(R.id.textPaymentMethod);
             textItemsCount = itemView.findViewById(R.id.textItemsCount);
             textShippingInfo = itemView.findViewById(R.id.textShippingInfo);
+            btnCancelOrder = itemView.findViewById(R.id.btnCancelOrder);
         }
     }
 }

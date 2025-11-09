@@ -270,6 +270,21 @@
                 style="@style/Widget.Material3.Button" />
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCancelOrder"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:text="Cancel"
+                android:textColor="@android:color/white"
+                android:textSize="13sp"
+                app:backgroundTint="#F59E0B"
+                app:cornerRadius="8dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:layout_marginEnd="8dp"
+                android:visibility="gone"
+                style="@style/Widget.Material3.Button" />
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnUpdateStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"

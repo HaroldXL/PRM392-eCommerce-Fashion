@@ -89,6 +89,9 @@ public class ManageOrdersActivity extends AppCompatActivity {
                     case 4:
                         currentTab = "Completed";
                         break;
+                    case 5:
+                        currentTab = "Cancelled";
+                        break;
                 }
                 filterOrdersByStatus();
             }
@@ -180,6 +183,9 @@ public class ManageOrdersActivity extends AppCompatActivity {
             case "UPDATE_STATUS":
                 updateOrderStatus(order, token);
                 break;
+            case "CANCEL":
+                cancelOrder(order, token);
+                break;
             case "DELETE":
                 deleteOrder(order.getId(), token);
                 break;
@@ -223,6 +229,44 @@ public class ManageOrdersActivity extends AppCompatActivity {
                 });
     }
 
+    private void cancelOrder(Order order, String token) {
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("Cancel Order")
+                .setMessage("Are you sure you want to cancel this order?")
+                .setPositiveButton("Yes, Cancel", (dialog, which) -> {
+                    progressBar.setVisibility(View.VISIBLE);
+
+                    // Create request body
+                    com.google.gson.JsonObject statusUpdate = new com.google.gson.JsonObject();
+                    statusUpdate.addProperty("status", "cancelled");
+
+                    apiService.updateOrderStatus(order.getId(), "Bearer " + token, statusUpdate)
+                            .enqueue(new Callback<Void>() {
+                                @Override
+                                public void onResponse(Call<Void> call, Response<Void> response) {
+                                    progressBar.setVisibility(View.GONE);
+                                    if (response.isSuccessful()) {
+                                        Toast.makeText(ManageOrdersActivity.this,
+                                                "Order cancelled successfully", Toast.LENGTH_SHORT).show();
+                                        loadOrders(); // Reload orders
+                                    } else {
+                                        Toast.makeText(ManageOrdersActivity.this,
+                                                "Failed to cancel order", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<Void> call, Throwable t) {
+                                    progressBar.setVisibility(View.GONE);
+                                    Toast.makeText(ManageOrdersActivity.this,
+                                            "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                })
+                .setNegativeButton("No", null)
+                .show();
+    }
+
     private void deleteOrder(int orderId, String token) {
         new androidx.appcompat.app.AlertDialog.Builder(this)
                 .setTitle("Delete Order")
@@ -258,6 +302,7 @@ public class ManageOrdersActivity extends AppCompatActivity {
 
     private String getNextStatus(String currentStatus) {
         // Valid transitions: Pending -> Confirmed -> Delivering -> Completed
+        // Cancelled orders cannot change status
         switch (currentStatus) {
             case "Pending":
                 return "Confirmed";
@@ -265,6 +310,8 @@ public class ManageOrdersActivity extends AppCompatActivity {
                 return "Delivering";
             case "Delivering":
                 return "Completed";
+            case "Cancelled":
+                return null; // Cancelled orders cannot be updated
             default:
                 return null; // Already completed or invalid status
         }

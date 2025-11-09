@@ -61,11 +61,10 @@ public class NotificationHelper {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_order) // Use order icon
                 .setContentTitle("Order Placed Successfully!")
-                .setContentText("Your order has been placed. Total: " + formatCurrency(totalAmount))
+                .setContentText("Your order has been placed.")
                 .setStyle(new NotificationCompat.BigTextStyle()
                         .bigText("Your order has been placed successfully!\n" +
                                 "Order ID: " + orderId + "\n" +
-                                "Total Amount: " + formatCurrency(totalAmount) + "\n" +
                                 "Thank you for shopping with us!"))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setAutoCancel(true) // Dismiss when tapped
