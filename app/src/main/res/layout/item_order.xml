@@ -68,7 +68,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:background="@drawable/bg_rounded_12"
-            android:backgroundTint="#F7FAFD"
+            android:backgroundTint="#F5F8FA"
             android:padding="16dp">
 
             <!-- Items count -->

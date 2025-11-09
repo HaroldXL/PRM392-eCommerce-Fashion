@@ -15,7 +15,7 @@
     
     <!-- Background Colors -->
     <color name="background">#FFFFFF</color>
-    <color name="background_light">#F7FAFD</color>
+    <color name="background_light">#F5F8FA</color>
     <color name="input_background">#F5F5F7</color>
     
     <!-- Text Colors -->
