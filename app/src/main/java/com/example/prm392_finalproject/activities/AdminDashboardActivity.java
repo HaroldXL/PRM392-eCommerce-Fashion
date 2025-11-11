@@ -10,13 +10,14 @@ import androidx.cardview.widget.CardView;
 
 import com.example.prm392_finalproject.LoginActivity;
 import com.example.prm392_finalproject.R;
+import com.example.prm392_finalproject.UserChatListActivity;
 import com.example.prm392_finalproject.utils.SessionManager;
 import com.google.android.material.button.MaterialButton;
 
 public class AdminDashboardActivity extends AppCompatActivity {
 
     private SessionManager sessionManager;
-    private CardView cardManageUsers, cardManageProducts, cardManageCategories, cardManageOrders;
+    private CardView cardManageUsers, cardManageProducts, cardManageCategories, cardManageOrders, cardManageUserChat;
     private MaterialButton btnLogout;
 
     @Override
@@ -41,6 +42,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
         cardManageProducts = findViewById(R.id.cardManageProducts);
         cardManageCategories = findViewById(R.id.cardManageCategories);
         cardManageOrders = findViewById(R.id.cardManageOrders);
+        cardManageUserChat = findViewById(R.id.cardManageUserChat);
         btnLogout = findViewById(R.id.btnLogout);
     }
 
@@ -62,6 +64,11 @@ public class AdminDashboardActivity extends AppCompatActivity {
 
         cardManageOrders.setOnClickListener(v -> {
             Intent intent = new Intent(AdminDashboardActivity.this, ManageOrdersActivity.class);
+            startActivity(intent);
+        });
+
+        cardManageUserChat.setOnClickListener(v -> {
+            Intent intent = new Intent(AdminDashboardActivity.this, UserChatListActivity.class);
             startActivity(intent);
         });
 

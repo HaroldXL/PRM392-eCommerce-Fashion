@@ -2,6 +2,8 @@ package com.example.prm392_finalproject.network;
 
 import com.example.prm392_finalproject.models.AuthResponse;
 import com.example.prm392_finalproject.models.Category;
+import com.example.prm392_finalproject.models.Chat;
+import com.example.prm392_finalproject.models.ChatMessage;
 import com.example.prm392_finalproject.models.CreateCategoryRequest;
 import com.example.prm392_finalproject.models.CreateOrderRequest;
 import com.example.prm392_finalproject.models.CreateProductRequest;
@@ -9,15 +11,16 @@ import com.example.prm392_finalproject.models.ForgotPasswordRequest;
 import com.example.prm392_finalproject.models.LoginRequest;
 import com.example.prm392_finalproject.models.MessageResponse;
 import com.example.prm392_finalproject.models.Order;
+import com.example.prm392_finalproject.models.PagedResult;
 import com.example.prm392_finalproject.models.PaymentInitRequest;
 import com.example.prm392_finalproject.models.PaymentInitResponse;
 import com.example.prm392_finalproject.models.PaymentStatus;
 import com.example.prm392_finalproject.models.Product;
 import com.example.prm392_finalproject.models.ProductDetail;
 import com.example.prm392_finalproject.models.ProductListResponse;
-import com.example.prm392_finalproject.models.ProductResponse;
 import com.example.prm392_finalproject.models.RegisterRequest;
 import com.example.prm392_finalproject.models.ResetPasswordRequest;
+import com.example.prm392_finalproject.models.SendMessageRequest;
 import com.example.prm392_finalproject.models.UpdateCategoryRequest;
 import com.example.prm392_finalproject.models.UpdateOrderRequest;
 import com.example.prm392_finalproject.models.UpdateProductRequest;
@@ -33,8 +36,6 @@ import java.util.Map;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
-import retrofit2.http.FieldMap;
-import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.PATCH;
@@ -148,4 +149,31 @@ public interface ApiService {
         @GET("Payment/vnpay-return")
         Call<PaymentStatus> returnVnPay(@QueryMap Map<String, String> params);
 
+        @GET("Chat/me")
+        Call<PagedResult<ChatMessage>> getCurrentCustomerMessage(
+                @Header("Authorization") String token,
+                @Query("page") int page,
+                @Query("size") int size
+        );
+
+        @GET("Chat/who/{id}")
+        Call<PagedResult<ChatMessage>> getCustomerMessage(
+                @Path("id") int customerId,
+                @Header("Authorization") String token,
+                @Query("page") int page,
+                @Query("size") int size
+        );
+
+        @POST("Chat/message")
+        Call<Void> sendMessage(
+                @Header("Authorization") String token,
+                @Body SendMessageRequest request
+        );
+
+        @GET("Chat/get-users-chat")
+        Call<PagedResult<Chat>> getUserChatList(
+                @Header("Authorization") String token,
+                @Query("page") int page,
+                @Query("size") int size
+        );
 }

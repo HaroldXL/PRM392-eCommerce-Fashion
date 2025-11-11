@@ -2,6 +2,7 @@ package com.example.prm392_finalproject.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 public class SessionManager {
     private static final String PREF_NAME = "BigSizeFashionPref";
@@ -10,6 +11,7 @@ public class SessionManager {
     private static final String KEY_FULL_NAME = "fullName";
     private static final String KEY_USER_ID = "userId";
     private static final String KEY_IS_LOGGED_IN = "isLoggedIn";
+    private static final String KEY_ROLE = "role";
 
     private SharedPreferences prefs;
     private SharedPreferences.Editor editor;
@@ -21,11 +23,12 @@ public class SessionManager {
         editor = prefs.edit();
     }
 
-    public void createLoginSession(String token, String email, String fullName) {
+    public void createLoginSession(String token, String email, String fullName, int role) {
         editor.putBoolean(KEY_IS_LOGGED_IN, true);
         editor.putString(KEY_TOKEN, token);
         editor.putString(KEY_EMAIL, email);
         editor.putString(KEY_FULL_NAME, fullName);
+        editor.putInt(KEY_ROLE, role);
         editor.commit();
     }
 
@@ -48,6 +51,10 @@ public class SessionManager {
 
     public String getFullName() {
         return prefs.getString(KEY_FULL_NAME, null);
+    }
+
+    public int getRole() {
+        return prefs.getInt(KEY_ROLE, -1);
     }
 
     public int getUserId() {

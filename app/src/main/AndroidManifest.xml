@@ -62,8 +62,17 @@
         <activity
             android:name=".MainActivity"
             android:exported="false"
+            android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait" />
-        
+
+        <!-- UserChatList Activity -->
+        <activity
+            android:name=".UserChatListActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask"
+            android:theme="@style/Theme.PRM392_FinalProject" />
+
         <!-- Home Activity -->
         <activity
             android:name=".HomeActivity"
@@ -71,7 +80,7 @@
             android:screenOrientation="portrait"
             android:launchMode="singleTask"
             android:theme="@style/Theme.PRM392_FinalProject" />
-        
+
         <!-- Profile Activity -->
         <activity
             android:name=".ProfileActivity"

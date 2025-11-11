@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private CartFragment cartFragment;
     private MyOrdersFragment myOrdersFragment;
     private ProfileFragment profileFragment;
+    private ChatFragment chatFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         setupBottomNavigation();
+
     }
 
     private void setupBottomNavigation() {
@@ -125,6 +127,13 @@ public class MainActivity extends AppCompatActivity {
                 }
                 loadFragment(profileFragment);
                 updateToolbarForProfile();
+                return true;
+            }else if (itemId == R.id.nav_chat) {
+                if (chatFragment == null) {
+                    chatFragment = new ChatFragment();
+                }
+                loadFragment(chatFragment);
+                updateToolbarForChat();
                 return true;
             }
             return false;
@@ -171,6 +180,14 @@ public class MainActivity extends AppCompatActivity {
         toolbarContentContainer.setVisibility(View.GONE);
         toolbarContentContainer.removeAllViews();
         toolbar.setTitle("Shopping Cart");
+        toolbar.setTitleTextColor(Color.parseColor("#3B82F6"));
+        setToolbarTitleBoldCentered();
+    }
+
+    private void updateToolbarForChat() {
+        toolbarContentContainer.setVisibility(View.GONE);
+        toolbarContentContainer.removeAllViews();
+        toolbar.setTitle("Chatting");
         toolbar.setTitleTextColor(Color.parseColor("#3B82F6"));
         setToolbarTitleBoldCentered();
     }

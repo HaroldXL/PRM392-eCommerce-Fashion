@@ -50,7 +50,8 @@ public class LoginActivity extends AppCompatActivity {
 
         // Check if user is already logged in
         if (sessionManager.isLoggedIn()) {
-            navigateToMain();
+            int role = sessionManager.getRole();
+            navigateBasedOnRole(role);
             return;
         }
 
@@ -117,7 +118,7 @@ public class LoginActivity extends AppCompatActivity {
                         String userName = authResponse.getEmail() != null ? authResponse.getEmail() : email;
                         int role = authResponse.getRole();
 
-                        sessionManager.createLoginSession(token, email, userName);
+                        sessionManager.createLoginSession(token, email, userName, role);
 
                         // Fetch user profile to get user ID and then navigate based on role
                         fetchUserProfile(token, role);

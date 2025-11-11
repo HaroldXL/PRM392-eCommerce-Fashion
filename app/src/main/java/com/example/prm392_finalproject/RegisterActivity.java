@@ -106,7 +106,8 @@ public class RegisterActivity extends AppCompatActivity {
                     if (authResponse.isSuccess()) {
                         // Optionally auto-login after registration
                         String token = authResponse.getToken() != null ? authResponse.getToken() : "";
-                        sessionManager.createLoginSession(token, email, fullName);
+                        int role = authResponse.getRole();
+                        sessionManager.createLoginSession(token, email, fullName, role);
 
                         // Fetch user profile to get user ID
                         fetchUserProfile(token);
