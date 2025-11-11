@@ -1,23 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="#F5F8FA"
+    android:background="@android:color/white"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Title -->
-    <TextView
-        android:id="@+id/tvTitle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Customer Chats"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:padding="16dp"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/tbTitle"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@android:color/white"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:titleTextColor="#1A1A1A">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Customers Chat"
+            android:textSize="20sp"
+            android:textColor="#1A1A1A"
+            android:textStyle="bold" />
+
+    </androidx.appcompat.widget.Toolbar>
+
 
     <!-- RecyclerView for chat list -->
     <androidx.recyclerview.widget.RecyclerView
@@ -26,7 +34,7 @@
         android:layout_height="0dp"
         android:clipToPadding="false"
         android:paddingBottom="16dp"
-        app:layout_constraintTop_toBottomOf="@id/tvTitle"
+        app:layout_constraintTop_toBottomOf="@id/tbTitle"
         app:layout_constraintBottom_toTopOf="@id/paginationLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
@@ -43,35 +51,39 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnPrevious"
+            style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:backgroundTint="#3B82F6"
-            app:cornerRadius="12dp"
             android:text="Previous"
-            android:enabled="false"/>
+            android:enabled="false"
+            app:cornerRadius="8dp"
+            app:strokeColor="@color/primary"
+            android:textColor="@color/primary" />
 
         <TextView
-            android:id="@+id/tvPage"
+            android:id="@+id/tvPageInfo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="1"
-            android:paddingRight="16dp"
-            android:paddingLeft="16dp"
-            android:textSize="16sp"/>
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:textSize="14sp"
+            android:textColor="@color/text_primary"
+            android:text="Page 1 of 1" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnNext"
+            style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:backgroundTint="#3B82F6"
-            app:cornerRadius="12dp"
-            android:text="Next"/>
+            android:text="Next"
+            android:enabled="false"
+            app:cornerRadius="8dp"
+            app:strokeColor="@color/primary"
+            android:textColor="@color/primary" />
+
+
     </LinearLayout>
 
     <FrameLayout

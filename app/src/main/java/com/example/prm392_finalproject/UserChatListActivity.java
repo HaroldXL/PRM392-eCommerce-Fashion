@@ -51,7 +51,7 @@ public class UserChatListActivity extends AppCompatActivity {
         rvChats = findViewById(R.id.rvChats);
         btnPrevious = findViewById(R.id.btnPrevious);
         btnNext = findViewById(R.id.btnNext);
-        tvPage = findViewById(R.id.tvPage);
+        tvPage = findViewById(R.id.tvPageInfo);
 
         sessionManager = new SessionManager(this);
         token = "Bearer " + sessionManager.getToken();
@@ -95,7 +95,7 @@ public class UserChatListActivity extends AppCompatActivity {
                     PagedResult<Chat> pagedResult = response.body();
                     currentPageChats.clear();
                     currentPageChats.addAll(pagedResult.getItems());
-                    totalPages = (int) Math.ceil(pagedResult.getTotalCount() / pageSize);
+                    totalPages = (int) Math.ceil(pagedResult.getTotalCount() / (double)pageSize);
                     chatAdapter.notifyDataSetChanged();
                     tvPage.setText(currentPage + " / " + totalPages);
                     btnPrevious.setEnabled(currentPage > 1);
